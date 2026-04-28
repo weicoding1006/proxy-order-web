@@ -20,6 +20,9 @@ function App() {
           <p>
             Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
           </p>
+          <span className="inline-block mt-2 px-3 py-1 text-xs font-semibold text-purple-700 bg-purple-100 rounded-full">
+            Tailwind v4 ✓
+          </span>
         </div>
         <button
           type="button"
