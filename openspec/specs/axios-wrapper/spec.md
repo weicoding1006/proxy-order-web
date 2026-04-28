@@ -15,11 +15,11 @@
 - **THEN** 可見 `axios.create()` 呼叫及匯出的 `get`、`post`、`put`、`del` 方法
 
 ### Requirement: baseURL 環境變數設定
-axios instance 的 `baseURL` SHALL 從環境變數 `VITE_API_BASE_URL` 讀取。
+axios instance 的 `baseURL` MUST 設為空字串（`''`），不依賴環境變數。Dev 環境透過 Vite proxy、prod 環境透過 Nginx proxy 處理路由，前端程式碼統一使用 `/api/...` 相對路徑。
 
-#### Scenario: baseURL 正確套用
-- **WHEN** `.env` 中設定 `VITE_API_BASE_URL=https://api.example.com`
-- **THEN** 所有透過封裝層發出的請求 URL 前綴為 `https://api.example.com`
+#### Scenario: baseURL 為空，請求使用相對路徑
+- **WHEN** 前端呼叫 `get('/api/products')`
+- **THEN** axios 發出相對路徑請求 `/api/products`，由當前環境的 proxy（Vite 或 Nginx）處理轉發
 
 ### Requirement: Request interceptor — Token 注入
 Request interceptor MUST 自動將 localStorage 中的 token 加入 `Authorization` header。
