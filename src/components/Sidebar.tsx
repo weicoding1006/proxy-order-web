@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
+import { useTokenCountdown } from '../hooks/useTokenCountdown'
+import { clearAuth } from '../utils/auth'
 
 const navItems = [
   { to: '/', icon: '🏠', label: '首頁' },
@@ -8,6 +10,13 @@ const navItems = [
 
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false)
+  const navigate = useNavigate()
+  const countdown = useTokenCountdown()
+
+  function handleLogout() {
+    clearAuth()
+    navigate('/login')
+  }
 
   return (
     <aside
@@ -28,6 +37,13 @@ export default function Sidebar() {
         </button>
       </div>
 
+      {!collapsed && (
+        <div className="px-3 py-2 border-b border-gray-700">
+          <p className="text-xs text-gray-400">登入剩餘時間</p>
+          <p className="text-sm font-mono text-yellow-400">{countdown}</p>
+        </div>
+      )}
+
       <nav className="flex flex-col gap-1 p-2 flex-1">
         {navItems.map(({ to, icon, label }) => (
           <NavLink
@@ -47,6 +63,16 @@ export default function Sidebar() {
           </NavLink>
         ))}
       </nav>
+
+      <div className="p-2 border-t border-gray-700">
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-3 px-2 py-2 w-full rounded-md text-sm text-gray-300 hover:bg-red-700 hover:text-white transition-colors"
+        >
+          <span className="text-base shrink-0">🚪</span>
+          {!collapsed && <span className="truncate">登出</span>}
+        </button>
+      </div>
     </aside>
   )
 }

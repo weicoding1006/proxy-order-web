@@ -15,8 +15,10 @@ export default function LoginPage() {
     setError(null)
     try {
       const res = await login({ email, password }) as any
-      if (res?.token) {
+      console.log(res)
+      if (res?.token && res?.expiresAt) {
         localStorage.setItem('token', res.token)
+        localStorage.setItem('expiresAt', res.expiresAt)
       }
       navigate('/')
     } catch (err: any) {
