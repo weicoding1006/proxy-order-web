@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { fetchOrders } from '../api/order'
+import OrderDetailModal from '../components/OrderDetailModal'
 
 interface OrderItem {
   id: string
@@ -37,6 +38,7 @@ export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null)
 
   useEffect(() => {
     fetchOrders()
@@ -76,6 +78,7 @@ export default function OrdersPage() {
                 <th className="px-4 py-3">金額</th>
                 <th className="px-4 py-3">狀態</th>
                 <th className="px-4 py-3">建立時間</th>
+                <th className='px-4 py-3'>操作</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -95,11 +98,26 @@ export default function OrdersPage() {
                   <td className="px-4 py-3 text-center text-gray-500">
                     {formatDate(order.createdAt)}
                   </td>
+                  <td className="px-4 py-3 text-center">
+                    <button
+                      onClick={() => setSelectedOrderId(order.id)}
+                      className="px-4 py-2 bg-blue-500 text-white hover:bg-blue-600 rounded"
+                    >
+                      檢視
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+      )}
+
+      {selectedOrderId && (
+        <OrderDetailModal
+          orderId={selectedOrderId}
+          onClose={() => setSelectedOrderId(null)}
+        />
       )}
     </div>
   )

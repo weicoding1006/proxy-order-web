@@ -25,6 +25,7 @@ interface OrderItemResponse {
   productId: string;
   quantity: number;
   unitPrice: number;
+  name: string;
 }
 
 export const createOrder = (data: CreateOrderRequest) => post('/api/orders', data);
