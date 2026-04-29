@@ -1,43 +1,43 @@
 import { get, post, put, del } from '../lib/http'
 
-export interface Product {
-  id: number
-  name: string
-  description: string
-  price: number
-  stock: number
-  imageUrl?: string
-  createdAt: string
-  updatedAt: string
+interface ProductResponseDto {
+  id:string;
+  name:string;
+  description:string;
+  price:number;
+  stock:number;
+  isActive:boolean;
+  createTime:Date;
+  updateTime:Date;
+  imageUrls?:string[]
 }
 
-export interface CreateProductDto {
-  name: string
-  description: string
-  price: number
-  stock: number
-  imageUrl?: string
+interface CreateProductDto {
+  name:string;
+  price:number;
+  description?:string;
+  stock?:number;
 }
 
-export interface UpdateProductDto {
-  name?: string
-  description?: string
-  price?: number
-  stock?: number
-  imageUrl?: string
+interface UpdateProductDto {
+  name?:string;
+  price?:number;
+  description?:string;
+  stock?:number; 
+  isActive?:boolean;
 }
 
 export const fetchProducts = () =>
-  get<Product[]>('/api/products')
+  get<ProductResponseDto[]>('/api/Product')
 
-export const fetchProductById = (id: number) =>
-  get<Product>(`/api/products/${id}`)
+export const fetchProductById = (id: string) =>
+  get<ProductResponseDto>(`/api/Product/${id}`)
 
 export const createProduct = (data: CreateProductDto) =>
-  post<Product>('/api/products', data)
+  post<ProductResponseDto>('/api/Product', data)
 
-export const updateProduct = (id: number, data: UpdateProductDto) =>
-  put<Product>(`/api/products/${id}`, data)
+export const updateProduct = (id: string, data: UpdateProductDto) =>
+  put<ProductResponseDto>(`/api/Product/${id}`, data)
 
-export const deleteProduct = (id: number) =>
-  del<void>(`/api/products/${id}`)
+export const deleteProduct = (id: string) =>
+  del<void>(`/api/Product/${id}`)
