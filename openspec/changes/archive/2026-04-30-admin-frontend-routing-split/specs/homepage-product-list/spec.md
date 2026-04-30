@@ -1,4 +1,4 @@
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: 後台商品管理頁顯示商品列表
 後台商品管理頁（原首頁）SHALL 在掛載時呼叫 `fetchProducts()` API，並將回傳的商品陣列（含停售商品）渲染為卡片網格，路由為 `/admin/products`。

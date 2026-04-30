@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { login } from '../api/auth'
+import { login, me } from '../api/auth'
+import { setRole } from '../utils/auth'
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -15,12 +16,18 @@ export default function LoginPage() {
     setError(null)
     try {
       const res = await login({ email, password }) as any
-      console.log(res)
       if (res?.token && res?.expiresAt) {
         localStorage.setItem('token', res.token)
         localStorage.setItem('expiresAt', res.expiresAt)
       }
-      navigate('/')
+      try {
+        const profile = await me()
+        const role = profile.roles?.[0] ?? 'user'
+        setRole(role)
+        navigate(profile.roles?.includes('Admin') ? '/admin/products' : '/')
+      } catch {
+        navigate('/')
+      }
     } catch (err: any) {
       setError(err?.message ?? '登入失敗，請確認帳號密碼')
     } finally {

@@ -4,8 +4,8 @@ import { useTokenCountdown } from '../hooks/useTokenCountdown'
 import { clearAuth } from '../utils/auth'
 
 const navItems = [
-  { to: '/', icon: '🏠', label: '首頁' },
-  { to: '/orders', icon: '📋', label: '訂單管理' },
+  { to: '/admin/products', icon: '🏠', label: '商品管理' },
+  { to: '/admin/orders', icon: '📋', label: '訂單管理' },
 ]
 
 export default function Sidebar() {
@@ -49,7 +49,7 @@ export default function Sidebar() {
           <NavLink
             key={to}
             to={to}
-            end={to === '/'}
+            end={to === '/admin/products'}
             className={({ isActive }) =>
               `flex items-center gap-3 px-2 py-2 rounded-md text-sm transition-colors ${
                 isActive

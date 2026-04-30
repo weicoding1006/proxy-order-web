@@ -1,4 +1,4 @@
-import { get, post, put, del } from '../lib/http'
+import { get, post} from '../lib/http'
 
 // 定義陣列內部的單一商品項目結構
 interface OrderItemRequest {

@@ -31,7 +31,7 @@ export default function RegisterPage() {
         <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">註冊</h1>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div className="flex gap-3">
+
             <div className="flex flex-col gap-1 flex-1">
               <label className="text-sm font-medium text-gray-700">名字</label>
               <input
@@ -54,7 +54,7 @@ export default function RegisterPage() {
                 placeholder="王"
               />
             </div>
-          </div>
+
 
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-gray-700">Email</label>

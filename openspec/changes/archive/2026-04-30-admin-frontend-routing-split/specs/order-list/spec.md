@@ -1,4 +1,4 @@
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: 後台訂單列表頁顯示所有訂單
 後台訂單列表頁 SHALL 在掛載時呼叫 `fetchOrders()`，並以 table 呈現回傳的訂單陣列，路由為 `/admin/orders`。欄位包含：訂單編號（截短）、金額（`NT$ {totalAmount}`）、狀態、建立時間。

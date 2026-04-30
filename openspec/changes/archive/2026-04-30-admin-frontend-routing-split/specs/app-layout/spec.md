@@ -1,4 +1,4 @@
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: AdminLayout 組合 Sidebar 與主內容區
 AdminLayout（原 AppLayout）SHALL 將 Sidebar 與主內容區（`<Outlet>`）並排排列，Sidebar 在左、內容區在右，共同填滿視窗高度。

@@ -1,4 +1,4 @@
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: 後台 Sidebar 顯示後台導覽連結
 後台 Sidebar SHALL 顯示導覽連結，路徑更新為 `/admin/*` 前綴，每個連結包含圖示與文字標籤。
