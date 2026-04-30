@@ -41,3 +41,10 @@ export const updateProduct = (id: string, data: UpdateProductDto) =>
 
 export const deleteProduct = (id: string) =>
   del<void>(`/api/Product/${id}`)
+
+
+export const createProductImage = (id: string, file: File) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  return post<ProductResponseDto>(`/api/Product/${id}/images`, formData);
+};
