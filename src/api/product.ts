@@ -9,7 +9,7 @@ interface ProductResponseDto {
   isActive:boolean;
   createTime:Date;
   updateTime:Date;
-  imageUrls?:string[]
+  images?:ProductImageDto[];
 }
 
 interface CreateProductDto {
@@ -26,6 +26,16 @@ interface UpdateProductDto {
   stock?:number; 
   isActive?:boolean;
 }
+
+interface ProductImageDto{
+  id:string;
+  imageUrl:string;
+  isCover:boolean;
+  sortOrder:number;
+  createAt:string;
+}
+
+
 
 export const fetchProducts = () =>
   get<ProductResponseDto[]>('/api/Product')
@@ -46,5 +56,7 @@ export const deleteProduct = (id: string) =>
 export const createProductImage = (id: string, file: File) => {
   const formData = new FormData();
   formData.append('file', file);
-  return post<ProductResponseDto>(`/api/Product/${id}/images`, formData);
+  return post<ProductResponseDto>(`/api/Product/${id}/images`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
 };

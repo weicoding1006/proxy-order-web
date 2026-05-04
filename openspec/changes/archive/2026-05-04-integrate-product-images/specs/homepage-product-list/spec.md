@@ -1,4 +1,4 @@
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: 後台商品管理頁顯示商品列表
 後台商品管理頁（原首頁）SHALL 在掛載時呼叫 `fetchProducts()` API，並將回傳的商品陣列（含停售商品）渲染為表格，路由為 `/admin/products`。表格 SHALL 包含「商品名稱」、「價格」、「庫存」、「狀態」與「操作」共五個欄位。
@@ -18,17 +18,3 @@
 #### Scenario: Modal 上傳成功後刷新列表
 - **WHEN** `ProductImageUploadModal` 的 `onUploaded` 回呼被觸發
 - **THEN** 重新呼叫 `fetchProducts()` 以刷新商品列表，並關閉 Modal
-
-### Requirement: 後台商品管理頁顯示載入中狀態
-頁面 SHALL 在 API 請求進行期間顯示 loading 指示器。
-
-#### Scenario: 資料載入中
-- **WHEN** `fetchProducts()` 尚未回傳結果
-- **THEN** 頁面顯示 loading 指示（如旋轉圖示或文字「載入中...」）
-
-### Requirement: 後台商品管理頁處理 API 錯誤
-頁面 SHALL 在 API 呼叫失敗時顯示錯誤訊息。
-
-#### Scenario: API 呼叫失敗
-- **WHEN** `fetchProducts()` 拋出錯誤或回傳非 2xx 狀態
-- **THEN** 頁面顯示錯誤提示文字，不顯示商品卡片或 loading 指示

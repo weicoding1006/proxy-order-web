@@ -1,5 +1,14 @@
 import { useEffect, useState } from 'react'
 import { fetchProducts } from '../api/product'
+import ProductImageUploadModal from '../components/ProductImageUploadModal'
+
+interface ProductImageDto {
+  id: string
+  imageUrl: string
+  isCover: boolean
+  sortOrder: number
+  createAt: string
+}
 
 interface Product {
   id: string
@@ -7,18 +16,25 @@ interface Product {
   price: number
   stock: number
   isActive: boolean
+  images?: ProductImageDto[]
 }
 
 export default function HomePage() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
 
-  useEffect(() => {
+  const loadProducts = () => {
+    setLoading(true)
     fetchProducts()
       .then(setProducts)
       .catch(() => setError('載入商品失敗，請稍後再試'))
       .finally(() => setLoading(false))
+  }
+
+  useEffect(() => {
+    loadProducts()
   }, [])
 
   if (loading) {
@@ -52,6 +68,7 @@ export default function HomePage() {
                 <th className="px-4 py-3">價格</th>
                 <th className="px-4 py-3">庫存</th>
                 <th className="px-4 py-3">狀態</th>
+                <th className="px-4 py-3">操作</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -71,11 +88,32 @@ export default function HomePage() {
                       {product.isActive ? '上架' : '下架'}
                     </span>
                   </td>
+                  <td className="px-4 py-3 text-center">
+                    <button
+                      onClick={() => setSelectedProduct(product)}
+                      className="text-xs px-3 py-1 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors"
+                    >
+                      編輯圖片
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+      )}
+
+      {selectedProduct && (
+        <ProductImageUploadModal
+          productId={selectedProduct.id}
+          productName={selectedProduct.name}
+          images={selectedProduct.images ?? []}
+          onClose={() => setSelectedProduct(null)}
+          onUploaded={() => {
+            setSelectedProduct(null)
+            loadProducts()
+          }}
+        />
       )}
     </div>
   )

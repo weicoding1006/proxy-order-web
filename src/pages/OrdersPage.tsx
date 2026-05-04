@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { fetchOrders } from '../api/order'
+import { fetchOrders,getAllOrder } from '../api/order'
 import OrderDetailModal from '../components/OrderDetailModal'
 
 interface OrderItem {
@@ -41,7 +41,7 @@ export default function OrdersPage() {
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null)
 
   useEffect(() => {
-    fetchOrders()
+    getAllOrder()
       .then(setOrders)
       .catch(() => setError('載入訂單失敗，請稍後再試'))
       .finally(() => setLoading(false))

@@ -31,3 +31,4 @@ interface OrderItemResponse {
 export const createOrder = (data: CreateOrderRequest) => post('/api/orders', data);
 export const fetchOrders = () => get<OrderResponse[]>('/api/orders');
 export const fetchOrderById = (id: string) => get<OrderResponse>(`/api/orders/${id}`);
+export const getAllOrder = () => get<OrderResponse[]>('/api/orders/all');

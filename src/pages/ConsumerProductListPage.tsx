@@ -1,12 +1,21 @@
 import { useEffect, useState } from 'react'
 import { fetchProducts } from '../api/product'
 
+interface ProductImageDto {
+  id: string
+  imageUrl: string
+  isCover: boolean
+  sortOrder: number
+  createAt: string
+}
+
 interface Product {
   id: string
   name: string
   price: number
   stock: number
   isActive: boolean
+  images?: ProductImageDto[]
 }
 
 export default function ConsumerProductListPage() {
@@ -45,15 +54,29 @@ export default function ConsumerProductListPage() {
         <p className="text-gray-500">目前沒有商品</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {products.map((product) => (
-            <div
-              key={product.id}
-              className="bg-white rounded-lg border border-gray-200 shadow-sm p-4 hover:shadow-md transition-shadow"
-            >
-              <h2 className="font-semibold text-gray-800 mb-2">{product.name}</h2>
-              <p className="text-blue-600 font-bold">NT$ {product.price.toLocaleString()}</p>
-            </div>
-          ))}
+          {products.map((product) => {
+            const coverImage = product.images?.find((img) => img.isCover)
+            return (
+              <div
+                key={product.id}
+                className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow overflow-hidden"
+              >
+                {coverImage ? (
+                  <img
+                    src={coverImage.imageUrl}
+                    alt={product.name}
+                    className="w-full h-40 object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-40 bg-gray-100" />
+                )}
+                <div className="p-4">
+                  <h2 className="font-semibold text-gray-800 mb-2">{product.name}</h2>
+                  <p className="text-blue-600 font-bold">NT$ {product.price.toLocaleString()}</p>
+                </div>
+              </div>
+            )
+          })}
         </div>
       )}
     </div>
