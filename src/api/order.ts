@@ -1,4 +1,4 @@
-import { get, post} from '../lib/http'
+import { get, post, put} from '../lib/http'
 
 // 定義陣列內部的單一商品項目結構
 interface OrderItemRequest {
@@ -32,3 +32,14 @@ export const createOrder = (data: CreateOrderRequest) => post('/api/orders', dat
 export const fetchOrders = () => get<OrderResponse[]>('/api/orders');
 export const fetchOrderById = (id: string) => get<OrderResponse>(`/api/orders/${id}`);
 export const getAllOrder = () => get<OrderResponse[]>('/api/orders/all');
+
+export const STATUS_INT: Record<string, number> = {
+  Pending: 0,
+  Confirmed: 1,
+  Shipped: 2,
+  Completed: 3,
+  Cancelled: 4,
+}
+
+export const getStatusEnums = () => get<string[]>('/api/orders/status/enums');
+export const updateOrderStatus = (id: string, status: number) => put<OrderResponse>(`/api/orders/${id}/status`, { status });

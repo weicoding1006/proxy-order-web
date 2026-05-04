@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { fetchProducts } from '../api/product'
-import ProductImageUploadModal from '../components/ProductImageUploadModal'
+import ProductEditModal from '../components/ProductEditModal'
 
 interface ProductImageDto {
   id: string
@@ -16,6 +16,7 @@ interface Product {
   price: number
   stock: number
   isActive: boolean
+  description?: string
   images?: ProductImageDto[]
 }
 
@@ -93,7 +94,7 @@ export default function HomePage() {
                       onClick={() => setSelectedProduct(product)}
                       className="text-xs px-3 py-1 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors"
                     >
-                      編輯圖片
+                      編輯
                     </button>
                   </td>
                 </tr>
@@ -104,12 +105,16 @@ export default function HomePage() {
       )}
 
       {selectedProduct && (
-        <ProductImageUploadModal
+        <ProductEditModal
           productId={selectedProduct.id}
-          productName={selectedProduct.name}
+          name={selectedProduct.name}
+          price={selectedProduct.price}
+          stock={selectedProduct.stock}
+          isActive={selectedProduct.isActive}
+          description={selectedProduct.description ?? ''}
           images={selectedProduct.images ?? []}
           onClose={() => setSelectedProduct(null)}
-          onUploaded={() => {
+          onSaved={() => {
             setSelectedProduct(null)
             loadProducts()
           }}

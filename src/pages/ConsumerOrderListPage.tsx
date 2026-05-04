@@ -39,11 +39,15 @@ export default function ConsumerOrderListPage() {
   const [error, setError] = useState<string | null>(null)
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null)
 
-  useEffect(() => {
+  function loadOrders() {
     fetchOrders()
       .then(setOrders)
       .catch(() => setError('載入訂單失敗，請稍後再試'))
       .finally(() => setLoading(false))
+  }
+
+  useEffect(() => {
+    loadOrders()
   }, [])
 
   if (loading) {
@@ -114,6 +118,11 @@ export default function ConsumerOrderListPage() {
         <OrderDetailModal
           orderId={selectedOrderId}
           onClose={() => setSelectedOrderId(null)}
+          onOrderCancelled={() => {
+            setSelectedOrderId(null)
+            setLoading(true)
+            loadOrders()
+          }}
         />
       )}
     </div>

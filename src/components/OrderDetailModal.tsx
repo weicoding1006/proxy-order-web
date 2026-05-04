@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { fetchOrderById } from '../api/order'
+import { fetchOrderById, getStatusEnums, updateOrderStatus, STATUS_INT } from '../api/order'
 
 interface OrderItem {
   id: string
@@ -21,7 +21,11 @@ interface Order {
 interface Props {
   orderId: string
   onClose: () => void
+  onOrderCancelled?: () => void
 }
+
+const CANCELLABLE_STATUSES = ['Pending', 'Confirmed']
+const MAIN_FLOW = ['Pending', 'Confirmed', 'Shipped', 'Completed']
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleString('zh-TW', {
@@ -30,19 +34,105 @@ function formatDate(iso: string) {
   })
 }
 
-export default function OrderDetailModal({ orderId, onClose }: Props) {
+function StatusProgressBar({ status, steps }: { status: string | null; steps: string[] }) {
+  if (!status || status === 'Cancelled') {
+    return (
+      <div className="flex items-center gap-2 mb-6">
+        <span className="inline-block text-xs font-medium px-3 py-1 rounded-full bg-red-100 text-red-600">
+          已取消
+        </span>
+      </div>
+    )
+  }
+
+  const currentIndex = steps.indexOf(status)
+
+  return (
+    <div className="mb-6">
+      <div className="flex items-center">
+        {steps.map((step, i) => {
+          const isDone = i < currentIndex
+          const isCurrent = i === currentIndex
+          return (
+            <div key={step} className="flex items-center flex-1 last:flex-none">
+              <div className="flex flex-col items-center">
+                <div
+                  className={[
+                    'w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold border-2 transition-colors',
+                    isDone
+                      ? 'bg-blue-500 border-blue-500 text-white'
+                      : isCurrent
+                      ? 'bg-white border-blue-500 text-blue-600'
+                      : 'bg-white border-gray-300 text-gray-400',
+                  ].join(' ')}
+                >
+                  {isDone ? '✓' : i + 1}
+                </div>
+                <span
+                  className={[
+                    'mt-1 text-xs whitespace-nowrap',
+                    isCurrent ? 'text-blue-600 font-semibold' : isDone ? 'text-blue-400' : 'text-gray-400',
+                  ].join(' ')}
+                >
+                  {step}
+                </span>
+              </div>
+              {i < steps.length - 1 && (
+                <div
+                  className={[
+                    'flex-1 h-0.5 mx-1 mb-4',
+                    isDone ? 'bg-blue-500' : 'bg-gray-200',
+                  ].join(' ')}
+                />
+              )}
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+export default function OrderDetailModal({ orderId, onClose, onOrderCancelled }: Props) {
   const [order, setOrder] = useState<Order | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [statusSteps, setStatusSteps] = useState<string[]>(MAIN_FLOW)
+  const [cancelling, setCancelling] = useState(false)
+  const [cancelError, setCancelError] = useState<string | null>(null)
 
   useEffect(() => {
     setLoading(true)
     setError(null)
-    fetchOrderById(orderId)
-      .then(setOrder)
-      .catch(() => setError('載入訂單詳情失敗'))
+
+    Promise.all([
+      fetchOrderById(orderId),
+      getStatusEnums().catch(() => null),
+    ]).then(([orderData, enums]) => {
+      setOrder(orderData)
+      if (Array.isArray(enums) && enums.length > 0) {
+        setStatusSteps(enums.filter((s) => s !== 'Cancelled'))
+      }
+    }).catch(() => setError('載入訂單詳情失敗'))
       .finally(() => setLoading(false))
   }, [orderId])
+
+  async function handleCancel() {
+    if (!order) return
+    setCancelling(true)
+    setCancelError(null)
+    try {
+      await updateOrderStatus(order.id, STATUS_INT['Cancelled'])
+      onOrderCancelled?.()
+      onClose()
+    } catch {
+      setCancelError('取消訂單失敗，請稍後再試')
+    } finally {
+      setCancelling(false)
+    }
+  }
+
+  const canCancel = order?.status != null && CANCELLABLE_STATUSES.includes(order.status)
 
   return (
     <div
@@ -77,6 +167,9 @@ export default function OrderDetailModal({ orderId, onClose }: Props) {
 
           {!loading && !error && order && (
             <>
+              {/* 狀態進度條 */}
+              <StatusProgressBar status={order.status} steps={statusSteps} />
+
               {/* 基本資訊 */}
               <div className="grid grid-cols-2 gap-4 mb-6 text-sm">
                 <div>
@@ -109,7 +202,7 @@ export default function OrderDetailModal({ orderId, onClose }: Props) {
                     <table className="min-w-full divide-y divide-gray-200 text-sm bg-white">
                       <thead className="bg-gray-50 text-xs font-semibold text-gray-500 uppercase text-center">
                         <tr>
-                          <th className="px-4 py-2">商品 ID</th>
+                          <th className="px-4 py-2">商品名稱</th>
                           <th className="px-4 py-2">數量</th>
                           <th className="px-4 py-2">單價</th>
                           <th className="px-4 py-2">小計</th>
@@ -118,7 +211,7 @@ export default function OrderDetailModal({ orderId, onClose }: Props) {
                       <tbody className="divide-y divide-gray-100">
                         {order.items.map((item) => (
                           <tr key={item.id} className="text-center text-gray-700">
-                            <td className="px-4 py-2 font-mono text-xs">{item.name}</td>
+                            <td className="px-4 py-2 text-xs">{item.name}</td>
                             <td className="px-4 py-2">{item.quantity}</td>
                             <td className="px-4 py-2">NT$ {item.unitPrice.toLocaleString()}</td>
                             <td className="px-4 py-2 font-medium">NT$ {(item.quantity * item.unitPrice).toLocaleString()}</td>
@@ -129,6 +222,22 @@ export default function OrderDetailModal({ orderId, onClose }: Props) {
                   </div>
                 )}
               </div>
+
+              {/* 取消訂單 */}
+              {canCancel && (
+                <div className="mt-6 border-t border-gray-100 pt-4">
+                  {cancelError && (
+                    <p className="text-sm text-red-500 mb-3">{cancelError}</p>
+                  )}
+                  <button
+                    onClick={handleCancel}
+                    disabled={cancelling}
+                    className="px-4 py-2 text-sm font-medium rounded border border-red-400 text-red-500 hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {cancelling ? '取消中...' : '取消訂單'}
+                  </button>
+                </div>
+              )}
             </>
           )}
         </div>
