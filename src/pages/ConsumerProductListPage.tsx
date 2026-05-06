@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { fetchProducts } from '../api/product'
 
 interface ProductImageDto {
@@ -57,9 +58,10 @@ export default function ConsumerProductListPage() {
           {products.map((product) => {
             const coverImage = product.images?.find((img) => img.isCover)
             return (
-              <div
+              <Link
                 key={product.id}
-                className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow overflow-hidden"
+                to={`/products/${product.id}`}
+                className="block bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow overflow-hidden"
               >
                 {coverImage ? (
                   <img
@@ -74,7 +76,7 @@ export default function ConsumerProductListPage() {
                   <h2 className="font-semibold text-gray-800 mb-2">{product.name}</h2>
                   <p className="text-blue-600 font-bold">NT$ {product.price.toLocaleString()}</p>
                 </div>
-              </div>
+              </Link>
             )
           })}
         </div>

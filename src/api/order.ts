@@ -11,7 +11,7 @@ interface CreateOrderRequest {
   items: OrderItemRequest[]; // 宣告 items 是一個包含 OrderItemRequest 的陣列
 }
 
-interface OrderResponse {
+export interface OrderResponse {
   id: string; // uuid
   userId: string | null;
   totalAmount: number; // double

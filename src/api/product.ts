@@ -1,38 +1,38 @@
 import { get, post, put, del } from '../lib/http'
 
 interface ProductResponseDto {
-  id:string;
-  name:string;
-  description:string;
-  price:number;
-  stock:number;
-  isActive:boolean;
-  createTime:Date;
-  updateTime:Date;
-  images?:ProductImageDto[];
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  stock: number;
+  isActive: boolean;
+  createTime: Date;
+  updateTime: Date;
+  images?: ProductImageDto[];
 }
 
 interface CreateProductDto {
-  name:string;
-  price:number;
-  description?:string;
-  stock?:number;
+  name: string;
+  price: number;
+  description?: string;
+  stock?: number;
 }
 
 interface UpdateProductDto {
-  name?:string;
-  price?:number;
-  description?:string;
-  stock?:number; 
-  isActive?:boolean;
+  name?: string;
+  price?: number;
+  description?: string;
+  stock?: number;
+  isActive?: boolean;
 }
 
-interface ProductImageDto{
-  id:string;
-  imageUrl:string;
-  isCover:boolean;
-  sortOrder:number;
-  createAt:string;
+interface ProductImageDto {
+  id: string;
+  imageUrl: string;
+  isCover: boolean;
+  sortOrder: number;
+  createAt: string;
 }
 
 

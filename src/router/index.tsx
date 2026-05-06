@@ -4,6 +4,8 @@ import ConsumerLayout from '../layouts/ConsumerLayout'
 import HomePage from '../pages/HomePage'
 import OrdersPage from '../pages/OrdersPage'
 import ConsumerProductListPage from '../pages/ConsumerProductListPage'
+import ConsumerProductDetailPage from '../pages/ConsumerProductDetailPage'
+import ConsumerCartPage from '../pages/ConsumerCartPage'
 import ConsumerOrderListPage from '../pages/ConsumerOrderListPage'
 import LoginPage from '../pages/LoginPage'
 import RegisterPage from '../pages/RegisterPage'
@@ -38,6 +40,14 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: <ConsumerProductListPage />,
+      },
+      {
+        path: '/products/:id',
+        element: <ConsumerProductDetailPage />,
+      },
+      {
+        path: '/cart',
+        element: <ConsumerCartPage />,
       },
       {
         path: '/my-orders',
