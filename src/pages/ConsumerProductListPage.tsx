@@ -54,7 +54,7 @@ export default function ConsumerProductListPage() {
       {products.length === 0 ? (
         <p className="text-gray-500">目前沒有商品</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-4">
           {products.map((product) => {
             const coverImage = product.images?.find((img) => img.isCover)
             return (
@@ -67,10 +67,10 @@ export default function ConsumerProductListPage() {
                   <img
                     src={coverImage.imageUrl}
                     alt={product.name}
-                    className="w-full h-40 object-cover"
+                    className="w-full  object-center"
                   />
                 ) : (
-                  <div className="w-full h-40 bg-gray-100" />
+                  <div className="w-full  bg-gray-100" />
                 )}
                 <div className="p-4">
                   <h2 className="font-semibold text-gray-800 mb-2">{product.name}</h2>
