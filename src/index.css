@@ -1,2 +1,101 @@
+@import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;500;600;700&family=Noto+Serif+TC:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap');
+
 @import "tailwindcss";
 
+:root {
+  /* Surfaces */
+  --paper:        #FBFAF7;
+  --cream:        #F6F3EC;
+  --sand:         #EFE9DA;
+  --bone:         #E5E0D4;
+
+  /* Ink */
+  --ink:          #1B1A17;
+  --ink-2:        #5C584F;
+  --ink-3:        #9B968A;
+  --ink-4:        #C5C0B3;
+
+  /* Brand accents */
+  --shu:          #B84A39;
+  --shu-dark:     #9A3D2F;
+  --shu-light:    #E9D6D1;
+
+  --moss:         #5F6E4A;
+  --moss-light:   #DCE0D2;
+
+  --ai:           #3E5872;
+  --ai-light:     #D7DEE6;
+
+  --yuhi:         #C69A4A;
+  --yuhi-light:   #EFE2C9;
+
+  /* Semantic */
+  --bg:           var(--cream);
+  --bg-elevated:  var(--paper);
+  --bg-section:   var(--sand);
+  --fg:           var(--ink);
+  --fg-muted:     var(--ink-2);
+  --fg-subtle:    var(--ink-3);
+  --fg-disabled:  var(--ink-4);
+  --fg-inverse:   var(--paper);
+  --border:       var(--bone);
+  --accent:       var(--shu);
+  --accent-hover: var(--shu-dark);
+
+  /* Typography */
+  --font-display: 'Noto Serif TC', 'Shippori Mincho B1', serif;
+  --font-sans:    'Noto Sans TC', 'Noto Sans JP', -apple-system, sans-serif;
+  --font-mono:    'JetBrains Mono', 'SF Mono', Menlo, monospace;
+
+  /* Spacing (4px grid) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+
+  /* Radii */
+  --r-1: 2px;
+  --r-2: 4px;
+  --r-3: 8px;
+  --r-pill: 9999px;
+
+  /* Shadows */
+  --shadow-line: 0 1px 0 var(--bone);
+  --shadow-card: 0 2px 8px rgba(27, 26, 23, 0.06);
+  --shadow-pop:  0 8px 24px rgba(27, 26, 23, 0.08);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.32, 0.72, 0, 1);
+  --t-fast:   140ms;
+  --t-base:   240ms;
+  --t-slow:   360ms;
+
+  /* Layout */
+  --container:  1280px;
+  --header-h:   72px;
+  --side-pad:   64px;
+}
+
+html, body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: opacity var(--t-fast) var(--ease-out);
+}
+
+::selection {
+  background: var(--shu);
+  color: var(--paper);
+}

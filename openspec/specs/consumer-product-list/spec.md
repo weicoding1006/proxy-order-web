@@ -24,3 +24,28 @@ ConsumerProductListPage SHALL 在 API 失敗時顯示錯誤提示。
 #### Scenario: API 呼叫失敗
 - **WHEN** `fetchProducts()` 拋出錯誤
 - **THEN** 頁面顯示錯誤提示文字，不顯示商品卡片
+
+### Requirement: Product list page uses Hiyori card grid
+The product list page SHALL render products in a grid: 4 columns on desktop, 2 columns on mobile. Each card SHALL have `var(--paper)` background, 1px `var(--bone)` border, 4px border-radius, shadow on hover. Image at 4:5 aspect ratio; name in `var(--font-display)` 15px; price in `var(--font-display)` 18px.
+
+#### Scenario: Product card renders with cover image
+- **WHEN** a product has a cover image
+- **THEN** the image SHALL fill the 4:5 aspect ratio area via object-cover
+
+#### Scenario: Card hover state
+- **WHEN** user hovers over a product card
+- **THEN** the card SHALL show a subtle shadow and the image SHALL scale to 1.03
+
+### Requirement: Category filter sidebar
+The page SHALL render a 220px left sidebar with category links (女裝, 男裝, 生活雜貨, 優惠專區). Active category SHALL have a 1px bottom border in `var(--ink)`.
+
+#### Scenario: Category filter is visible on desktop
+- **WHEN** the product list page renders on a wide viewport
+- **THEN** the left sidebar with category links SHALL be visible
+
+### Requirement: Page title and breadcrumb in Hiyori style
+H1 SHALL use `var(--font-display)` at 48px weight 400. Breadcrumb above SHALL use 11px uppercase `var(--ink-3)`.
+
+#### Scenario: Page title displayed
+- **WHEN** product list page renders
+- **THEN** H1 SHALL display `商品列表` in serif font

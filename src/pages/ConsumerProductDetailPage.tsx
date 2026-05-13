@@ -63,25 +63,25 @@ export default function ConsumerProductDetailPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <p className="text-gray-500 text-lg">載入中...</p>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '80px 0' }}>
+        <p style={{ color: 'var(--ink-3)', fontSize: 16 }}>載入中...</p>
       </div>
     )
   }
 
   if (notFound) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 gap-3">
-        <p className="text-gray-700 text-lg">找不到此商品</p>
-        <Link to="/" className="text-blue-600 hover:underline">回到商品列表</Link>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 0', gap: 16 }}>
+        <p style={{ color: 'var(--ink-2)', fontSize: 16 }}>找不到此商品</p>
+        <Link to="/" style={{ color: 'var(--shu)', fontSize: 13, letterSpacing: '0.08em' }}>← 回到商品列表</Link>
       </div>
     )
   }
 
   if (error || !product) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <p className="text-red-500 text-lg">{error ?? '商品載入失敗'}</p>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '80px 0' }}>
+        <p style={{ color: 'var(--shu)', fontSize: 16 }}>{error ?? '商品載入失敗'}</p>
       </div>
     )
   }
@@ -110,101 +110,239 @@ export default function ConsumerProductDetailPage() {
 
   return (
     <div>
-      <Link to="/" className="text-sm text-blue-600 hover:underline">← 回到商品列表</Link>
+      {/* Breadcrumb */}
+      <div style={{
+        fontSize: 11,
+        color: 'var(--ink-3)',
+        letterSpacing: '0.12em',
+        textTransform: 'uppercase',
+        marginBottom: 32,
+        display: 'flex',
+        gap: 8,
+        alignItems: 'center',
+      }}>
+        <Link to="/" style={{ color: 'var(--ink-3)', textDecoration: 'none' }}>首頁</Link>
+        <span style={{ color: 'var(--ink-4)' }}>/</span>
+        <Link to="/" style={{ color: 'var(--ink-3)', textDecoration: 'none' }}>商品列表</Link>
+        <span style={{ color: 'var(--ink-4)' }}>/</span>
+        <span style={{ color: 'var(--ink)' }}>{product.name}</span>
+      </div>
 
-      <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* 2-column grid */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: 48,
+        alignItems: 'start',
+      }}>
+        {/* Images */}
         <div>
-          {activeImage ? (
-            <img
-              src={activeImage.imageUrl}
-              alt={product.name}
-              className="w-full aspect-square object-cover rounded-lg border border-gray-200"
-            />
-          ) : (
-            <div className="w-full aspect-square bg-gray-100 rounded-lg border border-gray-200" />
-          )}
+          {/* Main image */}
+          <div style={{
+            aspectRatio: '4/5',
+            overflow: 'hidden',
+            background: 'var(--sand)',
+            borderRadius: 'var(--r-2)',
+            border: '1px solid var(--bone)',
+          }}>
+            {activeImage ? (
+              <img
+                src={activeImage.imageUrl}
+                alt={product.name}
+                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+              />
+            ) : (
+              <div style={{ width: '100%', height: '100%', background: 'var(--sand)' }} />
+            )}
+          </div>
+
+          {/* Thumbnail strip */}
           {sortedImages.length > 1 && (
-            <div className="mt-3 flex gap-2 overflow-x-auto">
+            <div style={{ marginTop: 12, display: 'flex', gap: 8, overflowX: 'auto' }}>
               {sortedImages.map((img) => (
                 <button
                   key={img.id}
                   type="button"
                   onClick={() => setActiveImageId(img.id)}
-                  className={`flex-shrink-0 w-16 h-16 rounded-md border-2 overflow-hidden ${
-                    img.id === activeImageId ? 'border-blue-500' : 'border-gray-200 hover:border-gray-400'
-                  }`}
+                  style={{
+                    flexShrink: 0,
+                    width: 64,
+                    height: 64,
+                    overflow: 'hidden',
+                    border: img.id === activeImageId
+                      ? '2px solid var(--shu)'
+                      : '1px solid var(--bone)',
+                    borderRadius: 0,
+                    padding: 0,
+                    cursor: 'pointer',
+                    background: 'var(--sand)',
+                  }}
                 >
-                  <img src={img.imageUrl} alt="" className="w-full h-full object-cover" />
+                  <img src={img.imageUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
                 </button>
               ))}
             </div>
           )}
         </div>
 
-        <div className="flex flex-col">
-          <h1 className="text-2xl font-bold text-gray-800">{product.name}</h1>
-          <p className="mt-2 text-2xl font-bold text-blue-600">NT$ {product.price.toLocaleString()}</p>
+        {/* Product info */}
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          {/* Name */}
+          <h1 style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: 28,
+            fontWeight: 400,
+            color: 'var(--ink)',
+            margin: 0,
+            marginBottom: 16,
+            lineHeight: 1.3,
+            letterSpacing: '-0.01em',
+          }}>
+            {product.name}
+          </h1>
 
-          <p className="mt-4 text-sm text-gray-600">
-            庫存：
+          {/* Price */}
+          <p style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: 32,
+            color: 'var(--ink)',
+            margin: 0,
+            marginBottom: 20,
+            letterSpacing: '-0.01em',
+          }}>
+            NT$ {product.price.toLocaleString()}
+          </p>
+
+          {/* Stock */}
+          <p style={{ fontSize: 13, color: 'var(--ink-3)', margin: 0, marginBottom: 20 }}>
+            庫存：{' '}
             {outOfStock ? (
-              <span className="text-red-600 font-semibold">缺貨</span>
+              <span style={{ color: 'var(--shu)', fontWeight: 500 }}>缺貨</span>
             ) : (
-              <span className="text-gray-800">{product.stock}</span>
+              <span style={{ color: 'var(--ink-2)' }}>{product.stock}</span>
             )}
           </p>
 
+          {/* Description */}
           {product.description && (
-            <div className="mt-4 text-gray-700 whitespace-pre-wrap">{product.description}</div>
+            <div style={{
+              fontFamily: 'var(--font-sans)',
+              fontSize: 15,
+              color: 'var(--ink-2)',
+              lineHeight: 1.85,
+              whiteSpace: 'pre-wrap',
+              marginBottom: 28,
+              paddingBottom: 28,
+              borderBottom: '1px solid var(--bone)',
+            }}>
+              {product.description}
+            </div>
           )}
 
-          <div className="mt-6 flex items-center gap-3">
-            <label htmlFor="quantity" className="text-sm text-gray-700">數量</label>
-            <div className="inline-flex items-center border border-gray-300 rounded-md">
+          {/* Quantity selector */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 20 }}>
+            <label style={{ fontSize: 13, color: 'var(--ink-3)', letterSpacing: '0.08em' }}>數量</label>
+            <div style={{ display: 'inline-flex' }}>
               <button
                 type="button"
                 onClick={() => handleQuantityChange(quantity - 1)}
                 disabled={outOfStock || quantity <= 1}
-                className="px-3 py-1 text-gray-600 disabled:text-gray-300 hover:bg-gray-100"
+                style={{
+                  width: 36,
+                  height: 36,
+                  border: '1px solid var(--bone)',
+                  borderRight: 'none',
+                  borderRadius: 0,
+                  background: 'var(--paper)',
+                  color: outOfStock || quantity <= 1 ? 'var(--ink-4)' : 'var(--ink)',
+                  fontSize: 18,
+                  cursor: outOfStock || quantity <= 1 ? 'not-allowed' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
               >
                 −
               </button>
               <input
-                id="quantity"
                 type="number"
                 min={1}
                 max={product.stock || 1}
                 value={quantity}
                 disabled={outOfStock}
                 onChange={(e) => handleQuantityChange(Number(e.target.value))}
-                className="w-14 text-center py-1 outline-none disabled:bg-gray-50"
+                style={{
+                  width: 52,
+                  height: 36,
+                  border: '1px solid var(--bone)',
+                  borderRadius: 0,
+                  background: 'var(--paper)',
+                  color: 'var(--ink)',
+                  textAlign: 'center',
+                  fontFamily: 'var(--font-sans)',
+                  fontSize: 14,
+                  outline: 'none',
+                }}
               />
               <button
                 type="button"
                 onClick={() => handleQuantityChange(quantity + 1)}
                 disabled={outOfStock || quantity >= product.stock}
-                className="px-3 py-1 text-gray-600 disabled:text-gray-300 hover:bg-gray-100"
+                style={{
+                  width: 36,
+                  height: 36,
+                  border: '1px solid var(--bone)',
+                  borderLeft: 'none',
+                  borderRadius: 0,
+                  background: 'var(--paper)',
+                  color: outOfStock || quantity >= product.stock ? 'var(--ink-4)' : 'var(--ink)',
+                  fontSize: 18,
+                  cursor: outOfStock || quantity >= product.stock ? 'not-allowed' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
               >
                 +
               </button>
             </div>
           </div>
 
+          {/* Add to cart button */}
           <button
             type="button"
             onClick={handleAddToCart}
             disabled={outOfStock || adding}
-            className="mt-6 w-full md:w-auto px-6 py-2 rounded-md bg-blue-600 text-white font-semibold hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+            style={{
+              background: outOfStock || adding ? 'var(--bone)' : 'var(--shu)',
+              color: outOfStock || adding ? 'var(--ink-3)' : 'var(--paper)',
+              border: 'none',
+              borderRadius: 'var(--r-1)',
+              padding: '12px 32px',
+              fontFamily: 'var(--font-sans)',
+              fontSize: 13,
+              letterSpacing: '0.1em',
+              cursor: outOfStock || adding ? 'not-allowed' : 'pointer',
+              transition: 'background var(--t-fast) var(--ease-out)',
+              alignSelf: 'flex-start',
+            }}
+            onMouseEnter={e => {
+              if (!outOfStock && !adding) e.currentTarget.style.background = 'var(--shu-dark)'
+            }}
+            onMouseLeave={e => {
+              if (!outOfStock && !adding) e.currentTarget.style.background = 'var(--shu)'
+            }}
           >
             {outOfStock ? '缺貨' : adding ? '加入中...' : '加入購物車'}
           </button>
 
+          {/* Feedback */}
           {feedback && (
-            <p
-              className={`mt-3 text-sm ${
-                feedback.type === 'success' ? 'text-green-600' : 'text-red-600'
-              }`}
-            >
+            <p style={{
+              marginTop: 12,
+              fontSize: 13,
+              color: feedback.type === 'success' ? 'var(--moss)' : 'var(--shu)',
+            }}>
               {feedback.text}
             </p>
           )}
