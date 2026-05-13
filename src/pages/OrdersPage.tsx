@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { fetchOrders,getAllOrder } from '../api/order'
+import { getAllOrder } from '../api/order'
 import OrderDetailModal from '../components/OrderDetailModal'
 
 interface OrderItem {
@@ -25,11 +25,22 @@ function formatDate(iso: string) {
   })
 }
 
+type StatusKey = 'Pending' | 'Confirmed' | 'Shipped' | 'Completed' | 'Cancelled'
+
+const STATUS_STYLE: Record<StatusKey, { className: string; label: string }> = {
+  Pending:   { className: 'bg-yuhi-light text-yuhi', label: '待確認' },
+  Confirmed: { className: 'bg-ai-light text-ai',     label: '已確認' },
+  Shipped:   { className: 'bg-ai-light text-ai',     label: '已出貨' },
+  Completed: { className: 'bg-moss-light text-moss', label: '已完成' },
+  Cancelled: { className: 'bg-bone text-ink-3',      label: '已取消' },
+}
+
 function StatusBadge({ status }: { status: string | null }) {
-  const label = status ?? '未知'
+  const key = status as StatusKey
+  const style = STATUS_STYLE[key] ?? { className: 'bg-sand text-ink-2', label: status ?? '未知' }
   return (
-    <span className="inline-block text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
-      {label}
+    <span className={`inline-block ${style.className} font-sans text-[11px] tracking-[0.1em] px-[10px] py-[3px] rounded-[2px]`}>
+      {STATUS_STYLE[key]?.label ?? (status ?? '未知')}
     </span>
   )
 }
@@ -50,7 +61,7 @@ export default function OrdersPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <p className="text-gray-500 text-lg">載入中...</p>
+        <p className="text-ink-3 text-base">載入中...</p>
       </div>
     )
   }
@@ -58,50 +69,58 @@ export default function OrdersPage() {
   if (error) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <p className="text-red-500 text-lg">{error}</p>
+        <p className="text-shu text-base">{error}</p>
       </div>
     )
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">訂單管理</h1>
+    <div className="max-w-[1280px] mx-auto px-16 py-12">
+      <p className="text-[11px] text-ink-3 tracking-[0.18em] uppercase m-0">
+        訂單管理 ・ Orders
+      </p>
+      <h1 className="font-display text-4xl font-normal text-ink tracking-[-0.01em] mt-2 mb-8">
+        訂單管理
+      </h1>
 
       {orders.length === 0 ? (
-        <p className="text-gray-500">目前沒有訂單</p>
+        <p className="text-ink-3 text-[15px]">目前沒有訂單</p>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
-          <table className="min-w-full divide-y divide-gray-200 bg-white text-sm">
-            <thead className="bg-gray-50 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              <tr>
-                <th className="px-4 py-3">訂單編號</th>
-                <th className="px-4 py-3">金額</th>
-                <th className="px-4 py-3">狀態</th>
-                <th className="px-4 py-3">建立時間</th>
-                <th className='px-4 py-3'>操作</th>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse bg-paper text-sm">
+            <thead>
+              <tr className="bg-sand">
+                {['訂單編號', '金額', '狀態', '建立時間', '操作'].map((col) => (
+                  <th
+                    key={col}
+                    className="px-4 py-3 text-center text-[11px] text-ink-3 font-medium tracking-[0.12em] uppercase border-b border-bone font-sans"
+                  >
+                    {col}
+                  </th>
+                ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody>
               {orders.map((order) => (
-                <tr key={order.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-4 py-3 text-center font-mono text-gray-700">
-                    <span title={order.id}>
+                <tr key={order.id} className="border-b border-bone">
+                  <td className="px-4 py-[14px] text-center">
+                    <span title={order.id} className="font-mono text-xs text-ink-3">
                       {order.id.slice(0, 8)}...
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-center text-gray-700">
+                  <td className="px-4 py-[14px] text-center font-sans text-sm text-ink">
                     NT$ {order.totalAmount.toLocaleString()}
                   </td>
-                  <td className="px-4 py-3 text-center">
+                  <td className="px-4 py-[14px] text-center">
                     <StatusBadge status={order.status} />
                   </td>
-                  <td className="px-4 py-3 text-center text-gray-500">
+                  <td className="px-4 py-[14px] text-center font-sans text-[13px] text-ink-3">
                     {formatDate(order.createdAt)}
                   </td>
-                  <td className="px-4 py-3 text-center">
+                  <td className="px-4 py-[14px] text-center">
                     <button
                       onClick={() => setSelectedOrderId(order.id)}
-                      className="px-4 py-2 bg-blue-500 text-white hover:bg-blue-600 rounded"
+                      className="bg-transparent hover:bg-ink text-ink hover:text-paper border border-ink rounded-[2px] py-[6px] px-4 font-sans text-xs tracking-[0.1em] transition-colors"
                     >
                       檢視
                     </button>

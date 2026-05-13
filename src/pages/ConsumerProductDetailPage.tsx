@@ -63,25 +63,25 @@ export default function ConsumerProductDetailPage() {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '80px 0' }}>
-        <p style={{ color: 'var(--ink-3)', fontSize: 16 }}>載入中...</p>
+      <div className="flex items-center justify-center py-20">
+        <p className="text-ink-3 text-base">載入中...</p>
       </div>
     )
   }
 
   if (notFound) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 0', gap: 16 }}>
-        <p style={{ color: 'var(--ink-2)', fontSize: 16 }}>找不到此商品</p>
-        <Link to="/" style={{ color: 'var(--shu)', fontSize: 13, letterSpacing: '0.08em' }}>← 回到商品列表</Link>
+      <div className="flex flex-col items-center justify-center py-20 gap-4">
+        <p className="text-ink-2 text-base">找不到此商品</p>
+        <Link to="/" className="text-shu text-[13px] tracking-[0.08em] hover:opacity-65">← 回到商品列表</Link>
       </div>
     )
   }
 
   if (error || !product) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '80px 0' }}>
-        <p style={{ color: 'var(--shu)', fontSize: 16 }}>{error ?? '商品載入失敗'}</p>
+      <div className="flex items-center justify-center py-20">
+        <p className="text-shu text-base">{error ?? '商品載入失敗'}</p>
       </div>
     )
   }
@@ -111,156 +111,81 @@ export default function ConsumerProductDetailPage() {
   return (
     <div>
       {/* Breadcrumb */}
-      <div style={{
-        fontSize: 11,
-        color: 'var(--ink-3)',
-        letterSpacing: '0.12em',
-        textTransform: 'uppercase',
-        marginBottom: 32,
-        display: 'flex',
-        gap: 8,
-        alignItems: 'center',
-      }}>
-        <Link to="/" style={{ color: 'var(--ink-3)', textDecoration: 'none' }}>首頁</Link>
-        <span style={{ color: 'var(--ink-4)' }}>/</span>
-        <Link to="/" style={{ color: 'var(--ink-3)', textDecoration: 'none' }}>商品列表</Link>
-        <span style={{ color: 'var(--ink-4)' }}>/</span>
-        <span style={{ color: 'var(--ink)' }}>{product.name}</span>
+      <div className="flex items-center gap-2 text-[11px] text-ink-3 tracking-[0.12em] uppercase mb-8">
+        <Link to="/" className="text-ink-3 hover:opacity-65">首頁</Link>
+        <span className="text-ink-4">/</span>
+        <Link to="/" className="text-ink-3 hover:opacity-65">商品列表</Link>
+        <span className="text-ink-4">/</span>
+        <span className="text-ink">{product.name}</span>
       </div>
 
-      {/* 2-column grid */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: 48,
-        alignItems: 'start',
-      }}>
+      {/* 2-col grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
         {/* Images */}
         <div>
-          {/* Main image */}
-          <div style={{
-            aspectRatio: '4/5',
-            overflow: 'hidden',
-            background: 'var(--sand)',
-            borderRadius: 'var(--r-2)',
-            border: '1px solid var(--bone)',
-          }}>
+          <div className="aspect-[4/5] overflow-hidden bg-sand rounded-[4px] border border-bone">
             {activeImage ? (
               <img
                 src={activeImage.imageUrl}
                 alt={product.name}
-                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                className="w-full h-full object-cover block"
               />
             ) : (
-              <div style={{ width: '100%', height: '100%', background: 'var(--sand)' }} />
+              <div className="w-full h-full bg-sand" />
             )}
           </div>
-
-          {/* Thumbnail strip */}
           {sortedImages.length > 1 && (
-            <div style={{ marginTop: 12, display: 'flex', gap: 8, overflowX: 'auto' }}>
+            <div className="mt-3 flex gap-2 overflow-x-auto">
               {sortedImages.map((img) => (
                 <button
                   key={img.id}
                   type="button"
                   onClick={() => setActiveImageId(img.id)}
-                  style={{
-                    flexShrink: 0,
-                    width: 64,
-                    height: 64,
-                    overflow: 'hidden',
-                    border: img.id === activeImageId
-                      ? '2px solid var(--shu)'
-                      : '1px solid var(--bone)',
-                    borderRadius: 0,
-                    padding: 0,
-                    cursor: 'pointer',
-                    background: 'var(--sand)',
-                  }}
+                  className={`shrink-0 w-16 h-16 overflow-hidden p-0 bg-sand ${
+                    img.id === activeImageId ? 'border-2 border-shu' : 'border border-bone'
+                  }`}
                 >
-                  <img src={img.imageUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                  <img src={img.imageUrl} alt="" className="w-full h-full object-cover block" />
                 </button>
               ))}
             </div>
           )}
         </div>
 
-        {/* Product info */}
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          {/* Name */}
-          <h1 style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: 28,
-            fontWeight: 400,
-            color: 'var(--ink)',
-            margin: 0,
-            marginBottom: 16,
-            lineHeight: 1.3,
-            letterSpacing: '-0.01em',
-          }}>
+        {/* Info */}
+        <div className="flex flex-col">
+          <h1 className="font-display text-[28px] font-normal text-ink leading-snug tracking-[-0.01em] m-0 mb-4">
             {product.name}
           </h1>
 
-          {/* Price */}
-          <p style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: 32,
-            color: 'var(--ink)',
-            margin: 0,
-            marginBottom: 20,
-            letterSpacing: '-0.01em',
-          }}>
+          <p className="font-display text-[32px] text-ink tracking-[-0.01em] m-0 mb-5">
             NT$ {product.price.toLocaleString()}
           </p>
 
-          {/* Stock */}
-          <p style={{ fontSize: 13, color: 'var(--ink-3)', margin: 0, marginBottom: 20 }}>
+          <p className="text-[13px] text-ink-3 m-0 mb-5">
             庫存：{' '}
             {outOfStock ? (
-              <span style={{ color: 'var(--shu)', fontWeight: 500 }}>缺貨</span>
+              <span className="text-shu font-medium">缺貨</span>
             ) : (
-              <span style={{ color: 'var(--ink-2)' }}>{product.stock}</span>
+              <span className="text-ink-2">{product.stock}</span>
             )}
           </p>
 
-          {/* Description */}
           {product.description && (
-            <div style={{
-              fontFamily: 'var(--font-sans)',
-              fontSize: 15,
-              color: 'var(--ink-2)',
-              lineHeight: 1.85,
-              whiteSpace: 'pre-wrap',
-              marginBottom: 28,
-              paddingBottom: 28,
-              borderBottom: '1px solid var(--bone)',
-            }}>
+            <div className="font-sans text-[15px] text-ink-2 leading-[1.85] whitespace-pre-wrap mb-7 pb-7 border-b border-bone">
               {product.description}
             </div>
           )}
 
-          {/* Quantity selector */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 20 }}>
-            <label style={{ fontSize: 13, color: 'var(--ink-3)', letterSpacing: '0.08em' }}>數量</label>
-            <div style={{ display: 'inline-flex' }}>
+          {/* Quantity */}
+          <div className="flex items-center gap-4 mb-5">
+            <label className="text-[13px] text-ink-3 tracking-[0.08em]">數量</label>
+            <div className="inline-flex">
               <button
                 type="button"
                 onClick={() => handleQuantityChange(quantity - 1)}
                 disabled={outOfStock || quantity <= 1}
-                style={{
-                  width: 36,
-                  height: 36,
-                  border: '1px solid var(--bone)',
-                  borderRight: 'none',
-                  borderRadius: 0,
-                  background: 'var(--paper)',
-                  color: outOfStock || quantity <= 1 ? 'var(--ink-4)' : 'var(--ink)',
-                  fontSize: 18,
-                  cursor: outOfStock || quantity <= 1 ? 'not-allowed' : 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
+                className="w-9 h-9 border border-bone border-r-0 bg-paper text-ink text-lg flex items-center justify-center disabled:text-ink-4 disabled:cursor-not-allowed"
               >
                 −
               </button>
@@ -271,78 +196,31 @@ export default function ConsumerProductDetailPage() {
                 value={quantity}
                 disabled={outOfStock}
                 onChange={(e) => handleQuantityChange(Number(e.target.value))}
-                style={{
-                  width: 52,
-                  height: 36,
-                  border: '1px solid var(--bone)',
-                  borderRadius: 0,
-                  background: 'var(--paper)',
-                  color: 'var(--ink)',
-                  textAlign: 'center',
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: 14,
-                  outline: 'none',
-                }}
+                className="w-[52px] h-9 border border-bone bg-paper text-ink text-center font-sans text-sm outline-none"
               />
               <button
                 type="button"
                 onClick={() => handleQuantityChange(quantity + 1)}
                 disabled={outOfStock || quantity >= product.stock}
-                style={{
-                  width: 36,
-                  height: 36,
-                  border: '1px solid var(--bone)',
-                  borderLeft: 'none',
-                  borderRadius: 0,
-                  background: 'var(--paper)',
-                  color: outOfStock || quantity >= product.stock ? 'var(--ink-4)' : 'var(--ink)',
-                  fontSize: 18,
-                  cursor: outOfStock || quantity >= product.stock ? 'not-allowed' : 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
+                className="w-9 h-9 border border-bone border-l-0 bg-paper text-ink text-lg flex items-center justify-center disabled:text-ink-4 disabled:cursor-not-allowed"
               >
                 +
               </button>
             </div>
           </div>
 
-          {/* Add to cart button */}
+          {/* Add to cart */}
           <button
             type="button"
             onClick={handleAddToCart}
             disabled={outOfStock || adding}
-            style={{
-              background: outOfStock || adding ? 'var(--bone)' : 'var(--shu)',
-              color: outOfStock || adding ? 'var(--ink-3)' : 'var(--paper)',
-              border: 'none',
-              borderRadius: 'var(--r-1)',
-              padding: '12px 32px',
-              fontFamily: 'var(--font-sans)',
-              fontSize: 13,
-              letterSpacing: '0.1em',
-              cursor: outOfStock || adding ? 'not-allowed' : 'pointer',
-              transition: 'background var(--t-fast) var(--ease-out)',
-              alignSelf: 'flex-start',
-            }}
-            onMouseEnter={e => {
-              if (!outOfStock && !adding) e.currentTarget.style.background = 'var(--shu-dark)'
-            }}
-            onMouseLeave={e => {
-              if (!outOfStock && !adding) e.currentTarget.style.background = 'var(--shu)'
-            }}
+            className="self-start bg-shu hover:bg-shu-dark text-paper rounded-[2px] py-3 px-8 font-sans text-[13px] tracking-[0.1em] transition-colors disabled:bg-bone disabled:text-ink-3 disabled:cursor-not-allowed disabled:hover:bg-bone"
           >
             {outOfStock ? '缺貨' : adding ? '加入中...' : '加入購物車'}
           </button>
 
-          {/* Feedback */}
           {feedback && (
-            <p style={{
-              marginTop: 12,
-              fontSize: 13,
-              color: feedback.type === 'success' ? 'var(--moss)' : 'var(--shu)',
-            }}>
+            <p className={`mt-3 text-[13px] ${feedback.type === 'success' ? 'text-moss' : 'text-shu'}`}>
               {feedback.text}
             </p>
           )}

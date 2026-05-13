@@ -24,166 +24,66 @@ export default function ConsumerLayout() {
     navigate('/login')
   }
 
+  const navLinkClass = ({ isActive }: { isActive: boolean }) =>
+    `font-sans text-[13px] text-ink tracking-[0.1em] pb-[2px] border-b ${
+      isActive ? 'border-ink' : 'border-transparent'
+    } hover:opacity-65 transition-opacity`
+
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--cream)' }}>
+    <div className="min-h-screen bg-cream">
       {/* Announcement strip */}
-      <div style={{
-        background: 'var(--ink)',
-        color: 'var(--paper)',
-        fontSize: 11,
-        letterSpacing: '0.18em',
-        textAlign: 'center',
-        padding: '7px 0',
-        textTransform: 'uppercase',
-      }}>
+      <div className="bg-ink text-paper text-[11px] tracking-[0.18em] text-center py-[7px] uppercase">
         ふだん便 ・ 滿 NT$3,000 免代運費 ・ 日本直送 7–10 工作日
       </div>
 
       {/* Header */}
-      <header style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 50,
-        background: 'rgba(246, 243, 236, 0.92)',
-        backdropFilter: 'blur(14px)',
-        WebkitBackdropFilter: 'blur(14px)',
-        borderBottom: '1px solid var(--bone)',
-      }}>
-        <div style={{
-          maxWidth: 'var(--container)',
-          margin: '0 auto',
-          padding: '0 var(--side-pad)',
-          height: 'var(--header-h)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: 32,
-        }}>
+      <header className="sticky top-0 z-50 bg-cream/90 backdrop-blur-md border-b border-bone">
+        <div className="max-w-[1280px] mx-auto px-16 h-[72px] flex items-center justify-between gap-8">
           {/* Logo */}
-          <NavLink to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', flexShrink: 0 }}>
-            <div style={{
-              width: 36,
-              height: 36,
-              background: 'var(--shu)',
-              color: 'var(--paper)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontFamily: 'var(--font-display)',
-              fontSize: 22,
-              fontWeight: 500,
-              flexShrink: 0,
-            }}>
+          <NavLink to="/" className="flex items-center gap-[10px] shrink-0">
+            <div className="w-9 h-9 bg-shu text-paper flex items-center justify-center font-display text-[22px] font-medium shrink-0">
               日
             </div>
-            <span style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 20,
-              fontWeight: 500,
-              letterSpacing: '-0.01em',
-              color: 'var(--ink)',
-            }}>
+            <span className="font-display text-[20px] font-medium tracking-[-0.01em] text-ink">
               日和代購
             </span>
           </NavLink>
 
-          <div style={{ flex: 1 }} />
+          <div className="flex-1" />
 
-          {/* Nav links */}
-          <nav style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
-            <NavLink
-              to="/"
-              end
-              style={({ isActive }) => ({
-                fontFamily: 'var(--font-sans)',
-                fontSize: 13,
-                color: 'var(--ink)',
-                letterSpacing: '0.1em',
-                textDecoration: 'none',
-                paddingBottom: 2,
-                borderBottom: isActive ? '1px solid var(--ink)' : '1px solid transparent',
-                transition: 'opacity var(--t-fast) var(--ease-out)',
-              })}
-            >
+          {/* Nav */}
+          <nav className="flex items-center gap-7">
+            <NavLink to="/" end className={navLinkClass}>
               商品列表
             </NavLink>
-            <NavLink
-              to="/my-orders"
-              style={({ isActive }) => ({
-                fontFamily: 'var(--font-sans)',
-                fontSize: 13,
-                color: 'var(--ink)',
-                letterSpacing: '0.1em',
-                textDecoration: 'none',
-                paddingBottom: 2,
-                borderBottom: isActive ? '1px solid var(--ink)' : '1px solid transparent',
-                transition: 'opacity var(--t-fast) var(--ease-out)',
-              })}
-            >
+            <NavLink to="/my-orders" className={navLinkClass}>
               我的訂單
             </NavLink>
 
-            {/* Cart */}
             <NavLink
               to="/cart"
-              style={({ isActive }) => ({
-                position: 'relative',
-                display: 'flex',
-                alignItems: 'center',
-                fontFamily: 'var(--font-sans)',
-                fontSize: 13,
-                color: 'var(--ink)',
-                letterSpacing: '0.1em',
-                textDecoration: 'none',
-                paddingBottom: 2,
-                borderBottom: isActive ? '1px solid var(--ink)' : '1px solid transparent',
-                gap: 6,
-              })}
+              className={({ isActive }) =>
+                `relative flex items-center gap-[6px] font-sans text-[13px] text-ink tracking-[0.1em] pb-[2px] border-b ${
+                  isActive ? 'border-ink' : 'border-transparent'
+                }`
+              }
             >
               購物車
               {cartItemCount > 0 && (
                 <span
                   aria-label={`購物車項目數 ${cartItemCount}`}
-                  style={{
-                    width: 18,
-                    height: 18,
-                    borderRadius: '50%',
-                    background: 'var(--shu)',
-                    color: 'var(--paper)',
-                    fontSize: 11,
-                    fontFamily: 'var(--font-mono)',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                  }}
+                  className="inline-flex items-center justify-center w-[18px] h-[18px] rounded-full bg-shu text-paper font-mono text-[11px] shrink-0"
                 >
                   {cartItemCount}
                 </span>
               )}
             </NavLink>
 
-            {/* Token countdown */}
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-3)' }}>
-              {countdown}
-            </span>
+            <span className="font-mono text-[11px] text-ink-3">{countdown}</span>
 
-            {/* Logout */}
             <button
               onClick={handleLogout}
-              style={{
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                fontFamily: 'var(--font-sans)',
-                fontSize: 13,
-                color: 'var(--ink-3)',
-                letterSpacing: '0.1em',
-                padding: 0,
-                transition: 'color var(--t-fast) var(--ease-out)',
-              }}
-              onMouseEnter={e => (e.currentTarget.style.color = 'var(--shu)')}
-              onMouseLeave={e => (e.currentTarget.style.color = 'var(--ink-3)')}
+              className="font-sans text-[13px] text-ink-3 tracking-[0.1em] hover:text-shu transition-colors"
             >
               登出
             </button>
@@ -191,14 +91,8 @@ export default function ConsumerLayout() {
         </div>
       </header>
 
-      {/* Main content */}
-      <main style={{
-        maxWidth: 'var(--container)',
-        margin: '0 auto',
-        padding: '0 var(--side-pad)',
-        paddingTop: 48,
-        paddingBottom: 96,
-      }}>
+      {/* Main */}
+      <main className="max-w-[1280px] mx-auto px-16 pt-12 pb-24">
         <Outlet />
       </main>
     </div>

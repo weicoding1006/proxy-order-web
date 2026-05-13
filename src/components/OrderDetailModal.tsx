@@ -27,6 +27,14 @@ interface Props {
 const CANCELLABLE_STATUSES = ['Pending', 'Confirmed']
 const MAIN_FLOW = ['Pending', 'Confirmed', 'Shipped', 'Completed']
 
+const STATUS_LABEL: Record<string, string> = {
+  Pending: '待確認',
+  Confirmed: '已確認',
+  Shipped: '已出貨',
+  Completed: '已完成',
+  Cancelled: '已取消',
+}
+
 function formatDate(iso: string) {
   return new Date(iso).toLocaleString('zh-TW', {
     year: 'numeric', month: '2-digit', day: '2-digit',
@@ -38,7 +46,7 @@ function StatusProgressBar({ status, steps }: { status: string | null; steps: st
   if (!status || status === 'Cancelled') {
     return (
       <div className="flex items-center gap-2 mb-6">
-        <span className="inline-block text-xs font-medium px-3 py-1 rounded-full bg-red-100 text-red-600">
+        <span className="inline-block bg-bone text-ink-3 font-sans text-[11px] tracking-[0.1em] px-3 py-1 rounded-[2px]">
           已取消
         </span>
       </div>
@@ -48,41 +56,40 @@ function StatusProgressBar({ status, steps }: { status: string | null; steps: st
   const currentIndex = steps.indexOf(status)
 
   return (
-    <div className="mb-6">
+    <div className="mb-7">
       <div className="flex items-center">
         {steps.map((step, i) => {
           const isDone = i < currentIndex
           const isCurrent = i === currentIndex
+
+          const circleClass = [
+            'w-[26px] h-[26px] rounded-full flex items-center justify-center text-[11px] font-semibold font-sans border-[1.5px] transition-colors',
+            isDone
+              ? 'bg-shu border-shu text-paper'
+              : isCurrent
+              ? 'bg-paper border-shu text-shu'
+              : 'bg-paper border-ink-4 text-ink-4',
+          ].join(' ')
+
+          const labelTextClass = [
+            'mt-[6px] text-[11px] whitespace-nowrap font-sans tracking-[0.04em]',
+            isCurrent ? 'text-shu font-medium' : isDone ? 'text-ink-2' : 'text-ink-3',
+          ].join(' ')
+
           return (
-            <div key={step} className="flex items-center flex-1 last:flex-none">
+            <div
+              key={step}
+              className={`flex items-center ${i === steps.length - 1 ? 'flex-none' : 'flex-1'}`}
+            >
               <div className="flex flex-col items-center">
-                <div
-                  className={[
-                    'w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold border-2 transition-colors',
-                    isDone
-                      ? 'bg-blue-500 border-blue-500 text-white'
-                      : isCurrent
-                      ? 'bg-white border-blue-500 text-blue-600'
-                      : 'bg-white border-gray-300 text-gray-400',
-                  ].join(' ')}
-                >
-                  {isDone ? '✓' : i + 1}
-                </div>
-                <span
-                  className={[
-                    'mt-1 text-xs whitespace-nowrap',
-                    isCurrent ? 'text-blue-600 font-semibold' : isDone ? 'text-blue-400' : 'text-gray-400',
-                  ].join(' ')}
-                >
-                  {step}
-                </span>
+                <div className={circleClass}>{isDone ? '✓' : i + 1}</div>
+                <span className={labelTextClass}>{STATUS_LABEL[step] ?? step}</span>
               </div>
               {i < steps.length - 1 && (
                 <div
-                  className={[
-                    'flex-1 h-0.5 mx-1 mb-4',
-                    isDone ? 'bg-blue-500' : 'bg-gray-200',
-                  ].join(' ')}
+                  className={`flex-1 h-px mx-2 mb-[18px] transition-colors ${
+                    isDone ? 'bg-shu' : 'bg-bone'
+                  }`}
                 />
               )}
             </div>
@@ -104,16 +111,14 @@ export default function OrderDetailModal({ orderId, onClose, onOrderCancelled }:
   useEffect(() => {
     setLoading(true)
     setError(null)
-
-    Promise.all([
-      fetchOrderById(orderId),
-      getStatusEnums().catch(() => null),
-    ]).then(([orderData, enums]) => {
-      setOrder(orderData)
-      if (Array.isArray(enums) && enums.length > 0) {
-        setStatusSteps(enums.filter((s) => s !== 'Cancelled'))
-      }
-    }).catch(() => setError('載入訂單詳情失敗'))
+    Promise.all([fetchOrderById(orderId), getStatusEnums().catch(() => null)])
+      .then(([orderData, enums]) => {
+        setOrder(orderData)
+        if (Array.isArray(enums) && enums.length > 0) {
+          setStatusSteps(enums.filter((s) => s !== 'Cancelled'))
+        }
+      })
+      .catch(() => setError('載入訂單詳情失敗'))
       .finally(() => setLoading(false))
   }, [orderId])
 
@@ -136,20 +141,22 @@ export default function OrderDetailModal({ orderId, onClose, onOrderCancelled }:
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 p-6"
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto"
+        className="bg-paper border border-bone rounded-lg shadow-[0_24px_60px_rgba(27,26,23,0.16)] w-full max-w-[680px] max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-800">訂單詳情</h2>
+        <div className="flex items-center justify-between px-6 py-5 border-b border-bone">
+          <h2 className="m-0 font-display text-2xl font-normal text-ink tracking-[-0.01em]">
+            訂單詳情
+          </h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 text-xl leading-none"
             aria-label="關閉"
+            className="w-8 h-8 flex items-center justify-center text-ink-3 hover:text-ink text-lg transition-colors"
           >
             ✕
           </button>
@@ -157,64 +164,70 @@ export default function OrderDetailModal({ orderId, onClose, onOrderCancelled }:
 
         {/* Body */}
         <div className="px-6 py-5">
-          {loading && (
-            <p className="text-center text-gray-500 py-8">載入中...</p>
-          )}
-
-          {error && (
-            <p className="text-center text-red-500 py-8">{error}</p>
-          )}
+          {loading && <p className="m-0 text-center py-8 text-ink-3">載入中...</p>}
+          {error && <p className="m-0 text-center py-8 text-shu">{error}</p>}
 
           {!loading && !error && order && (
             <>
-              {/* 狀態進度條 */}
               <StatusProgressBar status={order.status} steps={statusSteps} />
 
-              {/* 基本資訊 */}
-              <div className="grid grid-cols-2 gap-4 mb-6 text-sm">
+              {/* Meta */}
+              <div className="grid grid-cols-2 gap-4 mb-6 py-4 border-t border-b border-bone">
                 <div>
-                  <p className="text-gray-500 mb-1">訂單編號</p>
-                  <p className="font-mono text-gray-800 break-all">{order.id}</p>
+                  <p className="m-0 text-[10px] text-ink-3 tracking-[0.16em] uppercase">訂單編號</p>
+                  <p className="mt-1 font-mono text-[13px] text-ink break-all m-0">{order.id}</p>
                 </div>
                 <div>
-                  <p className="text-gray-500 mb-1">金額</p>
-                  <p className="text-gray-800 font-semibold">NT$ {order.totalAmount.toLocaleString()}</p>
+                  <p className="m-0 text-[10px] text-ink-3 tracking-[0.16em] uppercase">金額</p>
+                  <p className="mt-1 font-display text-lg text-ink m-0">
+                    NT$ {order.totalAmount.toLocaleString()}
+                  </p>
                 </div>
                 <div>
-                  <p className="text-gray-500 mb-1">狀態</p>
-                  <span className="inline-block text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
-                    {order.status ?? '未知'}
+                  <p className="m-0 text-[10px] text-ink-3 tracking-[0.16em] uppercase">狀態</p>
+                  <span className="inline-block mt-1 bg-sand text-ink-2 text-[11px] tracking-[0.1em] px-[10px] py-[3px] rounded-[2px]">
+                    {STATUS_LABEL[order.status ?? ''] ?? order.status ?? '未知'}
                   </span>
                 </div>
                 <div>
-                  <p className="text-gray-500 mb-1">建立時間</p>
-                  <p className="text-gray-800">{formatDate(order.createdAt)}</p>
+                  <p className="m-0 text-[10px] text-ink-3 tracking-[0.16em] uppercase">建立時間</p>
+                  <p className="mt-1 text-[13px] text-ink-2 m-0">{formatDate(order.createdAt)}</p>
                 </div>
               </div>
 
-              {/* 商品明細 */}
+              {/* Items */}
               <div>
-                <h3 className="text-sm font-semibold text-gray-700 mb-3">商品明細</h3>
+                <h3 className="m-0 mb-3 font-display text-base font-medium text-ink tracking-[-0.01em]">
+                  商品明細
+                </h3>
                 {!order.items || order.items.length === 0 ? (
-                  <p className="text-sm text-gray-400">無商品明細</p>
+                  <p className="m-0 text-[13px] text-ink-3">無商品明細</p>
                 ) : (
-                  <div className="overflow-x-auto rounded-lg border border-gray-200">
-                    <table className="min-w-full divide-y divide-gray-200 text-sm bg-white">
-                      <thead className="bg-gray-50 text-xs font-semibold text-gray-500 uppercase text-center">
-                        <tr>
-                          <th className="px-4 py-2">商品名稱</th>
-                          <th className="px-4 py-2">數量</th>
-                          <th className="px-4 py-2">單價</th>
-                          <th className="px-4 py-2">小計</th>
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse bg-paper text-[13px]">
+                      <thead>
+                        <tr className="bg-sand">
+                          {['商品名稱', '數量', '單價', '小計'].map((col) => (
+                            <th
+                              key={col}
+                              className="px-3 py-[10px] text-center text-[10px] text-ink-3 font-medium tracking-[0.12em] uppercase border-b border-bone"
+                            >
+                              {col}
+                            </th>
+                          ))}
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-gray-100">
+                      <tbody>
                         {order.items.map((item) => (
-                          <tr key={item.id} className="text-center text-gray-700">
-                            <td className="px-4 py-2 text-xs">{item.name}</td>
-                            <td className="px-4 py-2">{item.quantity}</td>
-                            <td className="px-4 py-2">NT$ {item.unitPrice.toLocaleString()}</td>
-                            <td className="px-4 py-2 font-medium">NT$ {(item.quantity * item.unitPrice).toLocaleString()}</td>
+                          <tr key={item.id} className="border-b border-bone">
+                            <td className="px-3 py-[10px] text-center text-ink font-sans">{item.name}</td>
+                            <td className="px-3 py-[10px] text-center text-ink-2 font-sans">{item.quantity}</td>
+                            <td className="px-3 py-[10px] text-center text-ink font-display">
+                              NT$ {item.unitPrice.toLocaleString()}
+                            </td>
+                            <td className="px-3 py-[10px] text-center text-ink font-display">
+                              NT$ {(item.quantity * item.unitPrice).toLocaleString()}
+                            </td>
                           </tr>
                         ))}
                       </tbody>
@@ -223,16 +236,16 @@ export default function OrderDetailModal({ orderId, onClose, onOrderCancelled }:
                 )}
               </div>
 
-              {/* 取消訂單 */}
+              {/* Cancel */}
               {canCancel && (
-                <div className="mt-6 border-t border-gray-100 pt-4">
+                <div className="mt-6 pt-4 border-t border-bone">
                   {cancelError && (
-                    <p className="text-sm text-red-500 mb-3">{cancelError}</p>
+                    <p className="mb-[10px] m-0 text-[13px] text-shu">{cancelError}</p>
                   )}
                   <button
                     onClick={handleCancel}
                     disabled={cancelling}
-                    className="px-4 py-2 text-sm font-medium rounded border border-red-400 text-red-500 hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="bg-transparent border border-shu text-shu hover:text-shu-dark hover:border-shu-dark rounded-[2px] py-2 px-[18px] font-sans text-[13px] tracking-[0.1em] transition-colors disabled:border-bone disabled:text-ink-4 disabled:cursor-not-allowed"
                   >
                     {cancelling ? '取消中...' : '取消訂單'}
                   </button>

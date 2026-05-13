@@ -41,7 +41,7 @@ export default function HomePage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <p className="text-gray-500 text-lg">載入中...</p>
+        <p className="text-ink-3 text-base">載入中...</p>
       </div>
     )
   }
@@ -49,50 +49,62 @@ export default function HomePage() {
   if (error) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <p className="text-red-500 text-lg">{error}</p>
+        <p className="text-shu text-base">{error}</p>
       </div>
     )
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">商品列表</h1>
+    <div className="max-w-[1280px] mx-auto px-16 py-12">
+      <p className="text-[11px] text-ink-3 tracking-[0.18em] uppercase m-0">
+        商品管理 ・ Products
+      </p>
+      <h1 className="font-display text-4xl font-normal text-ink tracking-[-0.01em] mt-2 mb-8">
+        商品列表
+      </h1>
 
       {products.length === 0 ? (
-        <p className="text-gray-500">目前沒有商品</p>
+        <p className="text-ink-3 text-[15px]">目前沒有商品</p>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
-          <table className="min-w-full divide-y divide-gray-200 bg-white text-sm">
-            <thead className="bg-gray-50 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              <tr>
-                <th className="px-4 py-3">商品名稱</th>
-                <th className="px-4 py-3">價格</th>
-                <th className="px-4 py-3">庫存</th>
-                <th className="px-4 py-3">狀態</th>
-                <th className="px-4 py-3">操作</th>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse bg-paper text-sm">
+            <thead>
+              <tr className="bg-sand">
+                {['商品名稱', '價格', '庫存', '狀態', '操作'].map((col) => (
+                  <th
+                    key={col}
+                    className="px-4 py-3 text-center text-[11px] text-ink-3 font-medium tracking-[0.12em] uppercase border-b border-bone font-sans"
+                  >
+                    {col}
+                  </th>
+                ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody>
               {products.map((product) => (
-                <tr key={product.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-4 py-3 font-medium text-gray-800 text-center">{product.name}</td>
-                  <td className="px-4 py-3 text-gray-700 text-center">NT$ {product.price.toLocaleString()}</td>
-                  <td className="px-4 py-3 text-gray-700 text-center">{product.stock}</td>
-                  <td className="px-4 py-3 text-center">
+                <tr key={product.id} className="border-b border-bone">
+                  <td className="px-4 py-[14px] text-center text-ink font-sans text-sm">
+                    {product.name}
+                  </td>
+                  <td className="px-4 py-[14px] text-center text-ink font-display text-sm">
+                    NT$ {product.price.toLocaleString()}
+                  </td>
+                  <td className="px-4 py-[14px] text-center text-ink-2 font-sans text-sm">
+                    {product.stock}
+                  </td>
+                  <td className="px-4 py-[14px] text-center">
                     <span
-                      className={`inline-block text-xs font-medium px-2 py-0.5 rounded-full ${
-                        product.isActive
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-gray-100 text-gray-500'
+                      className={`inline-block font-sans text-[11px] tracking-[0.08em] px-[10px] py-[3px] rounded-[2px] ${
+                        product.isActive ? 'bg-moss-light text-moss' : 'bg-bone text-ink-3'
                       }`}
                     >
                       {product.isActive ? '上架' : '下架'}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-center">
+                  <td className="px-4 py-[14px] text-center">
                     <button
                       onClick={() => setSelectedProduct(product)}
-                      className="text-xs px-3 py-1 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors"
+                      className="bg-transparent hover:bg-ink text-ink hover:text-paper border border-ink rounded-[2px] py-[5px] px-[14px] font-sans text-xs tracking-[0.1em] transition-colors"
                     >
                       編輯
                     </button>

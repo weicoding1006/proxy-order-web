@@ -88,73 +88,48 @@ export default function ConsumerCartPage() {
 
   if (status === 'loading' && items.length === 0) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '80px 0' }}>
-        <p style={{ color: 'var(--ink-3)', fontSize: 16 }}>載入中...</p>
+      <div className="flex items-center justify-center py-20">
+        <p className="text-ink-3 text-base">載入中...</p>
       </div>
     )
   }
 
   if (status === 'failed' && items.length === 0) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '80px 0' }}>
-        <p style={{ color: 'var(--shu)', fontSize: 16 }}>{loadError ?? '載入購物車失敗'}</p>
+      <div className="flex items-center justify-center py-20">
+        <p className="text-shu text-base">{loadError ?? '載入購物車失敗'}</p>
       </div>
     )
   }
 
   return (
     <div>
-      {/* Page title */}
-      <h1 style={{
-        fontFamily: 'var(--font-display)',
-        fontSize: 36,
-        fontWeight: 400,
-        color: 'var(--ink)',
-        margin: 0,
-        marginBottom: 32,
-        letterSpacing: '-0.01em',
-      }}>
+      <h1 className="font-display text-4xl font-normal text-ink tracking-[-0.01em] m-0 mb-8">
         購物車
       </h1>
 
       {items.length === 0 ? (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '64px 0', gap: 16 }}>
-          <p style={{ color: 'var(--ink-3)', fontSize: 16 }}>購物車是空的</p>
+        <div className="flex flex-col items-center justify-center py-16 gap-4">
+          <p className="text-ink-3 text-base">購物車是空的</p>
           <Link
             to="/"
-            style={{ color: 'var(--ink-2)', fontSize: 13, letterSpacing: '0.08em', textDecoration: 'none' }}
-            onMouseEnter={e => (e.currentTarget.style.color = 'var(--shu)')}
-            onMouseLeave={e => (e.currentTarget.style.color = 'var(--ink-2)')}
+            className="text-ink-2 hover:text-shu text-[13px] tracking-[0.08em] transition-colors"
           >
             去逛逛商品 →
           </Link>
         </div>
       ) : (
         <>
-          {/* Table */}
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{
-              width: '100%',
-              borderCollapse: 'collapse',
-              background: 'var(--paper)',
-              fontSize: 14,
-            }}>
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse bg-paper text-sm">
               <thead>
-                <tr style={{ background: 'var(--sand)' }}>
+                <tr className="bg-sand">
                   {['商品', '單價', '數量', '小計', '操作'].map((col, i) => (
                     <th
                       key={col}
-                      style={{
-                        padding: '12px 16px',
-                        textAlign: i === 0 ? 'left' : 'center',
-                        fontSize: 11,
-                        color: 'var(--ink-3)',
-                        fontWeight: 500,
-                        letterSpacing: '0.12em',
-                        textTransform: 'uppercase',
-                        borderBottom: '1px solid var(--bone)',
-                        fontFamily: 'var(--font-sans)',
-                      }}
+                      className={`px-4 py-3 text-[11px] text-ink-3 font-medium tracking-[0.12em] uppercase border-b border-bone font-sans ${
+                        i === 0 ? 'text-left' : 'text-center'
+                      }`}
                     >
                       {col}
                     </th>
@@ -165,110 +140,50 @@ export default function ConsumerCartPage() {
                 {items.map((item) => {
                   const isBusy = busyItemId === item.id
                   return (
-                    <tr key={item.id} style={{ borderBottom: '1px solid var(--bone)' }}>
-                      {/* Product name */}
-                      <td style={{ padding: '14px 16px', textAlign: 'left' }}>
+                    <tr key={item.id} className="border-b border-bone">
+                      <td className="px-4 py-[14px] text-left">
                         <Link
                           to={`/products/${item.productId}`}
-                          style={{ color: 'var(--ink)', textDecoration: 'none', fontFamily: 'var(--font-sans)', fontSize: 14 }}
-                          onMouseEnter={e => (e.currentTarget.style.color = 'var(--shu)')}
-                          onMouseLeave={e => (e.currentTarget.style.color = 'var(--ink)')}
+                          className="text-ink hover:text-shu font-sans text-sm transition-colors"
                         >
                           {item.productName}
                         </Link>
                       </td>
-
-                      {/* Unit price */}
-                      <td style={{ padding: '14px 16px', textAlign: 'center', color: 'var(--ink)', fontFamily: 'var(--font-sans)', fontSize: 14 }}>
+                      <td className="px-4 py-[14px] text-center text-ink font-sans text-sm">
                         NT$ {item.currentPrice.toLocaleString()}
                       </td>
-
-                      {/* Quantity controls */}
-                      <td style={{ padding: '14px 16px', textAlign: 'center' }}>
-                        <div style={{ display: 'inline-flex' }}>
+                      <td className="px-4 py-[14px] text-center">
+                        <div className="inline-flex">
                           <button
                             type="button"
                             disabled={isBusy || item.quantity <= 1}
                             onClick={() => handleUpdate(item.id, item.quantity - 1)}
-                            style={{
-                              width: 32,
-                              height: 32,
-                              border: '1px solid var(--bone)',
-                              borderRight: 'none',
-                              borderRadius: 0,
-                              background: 'var(--paper)',
-                              color: isBusy || item.quantity <= 1 ? 'var(--ink-4)' : 'var(--ink)',
-                              fontSize: 16,
-                              cursor: isBusy || item.quantity <= 1 ? 'not-allowed' : 'pointer',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                            }}
+                            className="w-8 h-8 border border-bone border-r-0 bg-paper text-ink text-base flex items-center justify-center disabled:text-ink-4 disabled:cursor-not-allowed"
                           >
                             −
                           </button>
-                          <span style={{
-                            width: 40,
-                            height: 32,
-                            border: '1px solid var(--bone)',
-                            background: 'var(--paper)',
-                            color: 'var(--ink)',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontFamily: 'var(--font-sans)',
-                            fontSize: 13,
-                          }}>
+                          <span className="inline-flex items-center justify-center w-10 h-8 border border-bone bg-paper text-ink font-sans text-[13px]">
                             {item.quantity}
                           </span>
                           <button
                             type="button"
                             disabled={isBusy}
                             onClick={() => handleUpdate(item.id, item.quantity + 1)}
-                            style={{
-                              width: 32,
-                              height: 32,
-                              border: '1px solid var(--bone)',
-                              borderLeft: 'none',
-                              borderRadius: 0,
-                              background: 'var(--paper)',
-                              color: isBusy ? 'var(--ink-4)' : 'var(--ink)',
-                              fontSize: 16,
-                              cursor: isBusy ? 'not-allowed' : 'pointer',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                            }}
+                            className="w-8 h-8 border border-bone border-l-0 bg-paper text-ink text-base flex items-center justify-center disabled:text-ink-4 disabled:cursor-not-allowed"
                           >
                             +
                           </button>
                         </div>
                       </td>
-
-                      {/* Subtotal */}
-                      <td style={{ padding: '14px 16px', textAlign: 'center', color: 'var(--ink)', fontFamily: 'var(--font-sans)', fontSize: 14 }}>
+                      <td className="px-4 py-[14px] text-center text-ink font-sans text-sm">
                         NT$ {item.subtotal.toLocaleString()}
                       </td>
-
-                      {/* Remove */}
-                      <td style={{ padding: '14px 16px', textAlign: 'center' }}>
+                      <td className="px-4 py-[14px] text-center">
                         <button
                           type="button"
                           disabled={isBusy}
                           onClick={() => handleRemove(item.id)}
-                          style={{
-                            background: 'none',
-                            border: 'none',
-                            cursor: isBusy ? 'not-allowed' : 'pointer',
-                            color: isBusy ? 'var(--ink-4)' : 'var(--ink-3)',
-                            fontFamily: 'var(--font-sans)',
-                            fontSize: 12,
-                            letterSpacing: '0.08em',
-                            padding: '4px 8px',
-                            transition: 'color var(--t-fast) var(--ease-out)',
-                          }}
-                          onMouseEnter={e => { if (!isBusy) e.currentTarget.style.color = 'var(--shu)' }}
-                          onMouseLeave={e => { if (!isBusy) e.currentTarget.style.color = 'var(--ink-3)' }}
+                          className="text-ink-3 hover:text-shu disabled:text-ink-4 disabled:cursor-not-allowed font-sans text-xs tracking-[0.08em] px-2 py-1 transition-colors"
                         >
                           移除
                         </button>
@@ -280,63 +195,27 @@ export default function ConsumerCartPage() {
             </table>
           </div>
 
-          {actionError && (
-            <p style={{ marginTop: 12, fontSize: 13, color: 'var(--shu)' }}>{actionError}</p>
-          )}
+          {actionError && <p className="mt-3 text-[13px] text-shu">{actionError}</p>}
 
-          {/* Footer: clear + total + checkout */}
-          <div style={{
-            marginTop: 32,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: 16,
-            paddingTop: 24,
-            borderTop: '1px solid var(--bone)',
-          }}>
+          <div className="mt-8 flex flex-wrap items-center justify-between gap-4 pt-6 border-t border-bone">
             <button
               type="button"
               onClick={handleClearCart}
               disabled={submitting !== null}
-              style={{
-                background: 'transparent',
-                border: '1px solid var(--bone)',
-                borderRadius: 'var(--r-1)',
-                padding: '10px 20px',
-                fontFamily: 'var(--font-sans)',
-                fontSize: 13,
-                color: submitting !== null ? 'var(--ink-4)' : 'var(--ink-2)',
-                cursor: submitting !== null ? 'not-allowed' : 'pointer',
-                letterSpacing: '0.08em',
-                transition: 'color var(--t-fast) var(--ease-out)',
-              }}
+              className="bg-transparent border border-bone rounded-[2px] py-[10px] px-5 font-sans text-[13px] text-ink-2 tracking-[0.08em] hover:text-ink disabled:text-ink-4 disabled:cursor-not-allowed transition-colors"
             >
               {submitting === 'clear' ? '清空中...' : '清空購物車'}
             </button>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
-              <span style={{ fontFamily: 'var(--font-display)', fontSize: 24, color: 'var(--ink)', letterSpacing: '-0.01em' }}>
+            <div className="flex items-center gap-6">
+              <span className="font-display text-2xl text-ink tracking-[-0.01em]">
                 NT$ {totalAmount.toLocaleString()}
               </span>
               <button
                 type="button"
                 onClick={handleCheckout}
                 disabled={submitting !== null}
-                style={{
-                  background: submitting !== null ? 'var(--bone)' : 'var(--shu)',
-                  color: submitting !== null ? 'var(--ink-3)' : 'var(--paper)',
-                  border: 'none',
-                  borderRadius: 'var(--r-1)',
-                  padding: '12px 32px',
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: 13,
-                  letterSpacing: '0.1em',
-                  cursor: submitting !== null ? 'not-allowed' : 'pointer',
-                  transition: 'background var(--t-fast) var(--ease-out)',
-                }}
-                onMouseEnter={e => { if (submitting === null) e.currentTarget.style.background = 'var(--shu-dark)' }}
-                onMouseLeave={e => { if (submitting === null) e.currentTarget.style.background = 'var(--shu)' }}
+                className="bg-shu hover:bg-shu-dark text-paper rounded-[2px] py-3 px-8 font-sans text-[13px] tracking-[0.1em] transition-colors disabled:bg-bone disabled:text-ink-3 disabled:cursor-not-allowed disabled:hover:bg-bone"
               >
                 {submitting === 'checkout' ? '結帳中...' : '結帳'}
               </button>

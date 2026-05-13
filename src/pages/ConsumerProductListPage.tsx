@@ -43,16 +43,16 @@ export default function ConsumerProductListPage() {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '80px 0' }}>
-        <p style={{ color: 'var(--ink-3)', fontSize: 16 }}>載入中...</p>
+      <div className="flex items-center justify-center py-20">
+        <p className="text-ink-3 text-base">載入中...</p>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '80px 0' }}>
-        <p style={{ color: 'var(--shu)', fontSize: 16 }}>{error}</p>
+      <div className="flex items-center justify-center py-20">
+        <p className="text-shu text-base">{error}</p>
       </div>
     )
   }
@@ -60,51 +60,24 @@ export default function ConsumerProductListPage() {
   return (
     <div>
       {/* Breadcrumb + title */}
-      <div style={{ marginBottom: 32 }}>
-        <div style={{
-          fontSize: 11,
-          color: 'var(--ink-3)',
-          letterSpacing: '0.12em',
-          textTransform: 'uppercase',
-          marginBottom: 16,
-          display: 'flex',
-          gap: 8,
-          alignItems: 'center',
-        }}>
+      <div className="mb-8">
+        <div className="flex items-center gap-2 text-[11px] text-ink-3 tracking-[0.12em] uppercase mb-4">
           <span>首頁</span>
-          <span style={{ color: 'var(--ink-4)' }}>/</span>
-          <span style={{ color: 'var(--ink)' }}>商品列表</span>
+          <span className="text-ink-4">/</span>
+          <span className="text-ink">商品列表</span>
         </div>
-        <h1 style={{
-          fontFamily: 'var(--font-display)',
-          fontSize: 48,
-          fontWeight: 400,
-          color: 'var(--ink)',
-          margin: 0,
-          lineHeight: 1.1,
-        }}>
+        <h1 className="font-display text-[48px] font-normal text-ink leading-[1.1] m-0">
           商品列表
         </h1>
-        <p style={{ fontSize: 12, color: 'var(--ink-3)', fontFamily: 'var(--font-sans)', marginTop: 8, letterSpacing: '0.06em' }}>
-          {products.length} 件商品
-        </p>
+        <p className="text-xs text-ink-3 mt-2 tracking-[0.06em]">{products.length} 件商品</p>
       </div>
 
-      {/* 2-column layout */}
-      <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr', gap: 48, alignItems: 'start' }}>
+      {/* 2-col layout */}
+      <div className="grid grid-cols-[220px_1fr] gap-12 items-start">
         {/* Sidebar */}
         <aside>
-          <div style={{ borderBottom: '1px solid var(--bone)', paddingBottom: 16, marginBottom: 16 }}>
-            <h4 style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 13,
-              fontWeight: 500,
-              color: 'var(--ink-2)',
-              letterSpacing: '0.12em',
-              textTransform: 'uppercase',
-              margin: 0,
-              marginBottom: 12,
-            }}>
+          <div className="border-b border-bone pb-4 mb-4">
+            <h4 className="font-display text-[13px] font-medium text-ink-2 tracking-[0.12em] uppercase m-0 mb-3">
               分類
             </h4>
             {CATEGORIES.map((cat) => {
@@ -113,62 +86,36 @@ export default function ConsumerProductListPage() {
                 <button
                   key={cat.id}
                   onClick={() => {
-                    if (cat.id === 'all') {
-                      setSearchParams({})
-                    } else {
-                      setSearchParams({ category: cat.id })
-                    }
+                    if (cat.id === 'all') setSearchParams({})
+                    else setSearchParams({ category: cat.id })
                   }}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'baseline',
-                    justifyContent: 'space-between',
-                    width: '100%',
-                    background: 'none',
-                    border: 'none',
-                    borderBottom: isActive ? '1px solid var(--ink)' : '1px solid transparent',
-                    padding: '7px 0',
-                    cursor: 'pointer',
-                    textAlign: 'left',
-                  }}
+                  className={`flex items-baseline justify-between w-full py-[7px] text-left border-b ${
+                    isActive ? 'border-ink' : 'border-transparent'
+                  }`}
                 >
-                  <span style={{
-                    fontFamily: 'var(--font-display)',
-                    fontSize: 15,
-                    color: isActive ? 'var(--ink)' : 'var(--ink-2)',
-                    fontWeight: isActive ? 500 : 400,
-                  }}>
+                  <span
+                    className={`font-display text-[15px] ${
+                      isActive ? 'text-ink font-medium' : 'text-ink-2'
+                    }`}
+                  >
                     {cat.label}
                   </span>
-                  <span style={{
-                    fontSize: 10,
-                    color: 'var(--ink-3)',
-                    letterSpacing: '0.18em',
-                    textTransform: 'uppercase',
-                  }}>
-                    {cat.sub}
-                  </span>
+                  <span className="text-[10px] text-ink-3 tracking-[0.18em] uppercase">{cat.sub}</span>
                 </button>
               )
             })}
           </div>
         </aside>
 
-        {/* Product grid */}
+        {/* Products */}
         <div>
           {products.length === 0 ? (
-            <p style={{ color: 'var(--ink-3)', fontSize: 15 }}>目前沒有商品</p>
+            <p className="text-ink-3 text-[15px]">目前沒有商品</p>
           ) : (
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(4, 1fr)',
-              gap: 24,
-            }}>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
               {products.map((product) => {
                 const coverImage = product.images?.find((img) => img.isCover)
-                return (
-                  <ProductCard key={product.id} product={product} coverImage={coverImage} />
-                )
+                return <ProductCard key={product.id} product={product} coverImage={coverImage} />
               })}
             </div>
           )}
@@ -185,68 +132,27 @@ function ProductCard({
   product: { id: string; name: string; price: number }
   coverImage?: { imageUrl: string }
 }) {
-  const [hovered, setHovered] = useState(false)
-
   return (
     <Link
       to={`/products/${product.id}`}
-      style={{
-        display: 'block',
-        textDecoration: 'none',
-        background: 'var(--paper)',
-        border: '1px solid var(--bone)',
-        borderRadius: 'var(--r-2)',
-        overflow: 'hidden',
-        transition: `box-shadow var(--t-base) var(--ease-out)`,
-        boxShadow: hovered ? 'var(--shadow-card)' : 'none',
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      className="group block bg-paper border border-bone rounded-[4px] overflow-hidden transition-shadow duration-200 hover:shadow-[0_2px_8px_rgba(27,26,23,0.06)]"
     >
-      {/* Image */}
-      <div style={{
-        aspectRatio: '4/5',
-        overflow: 'hidden',
-        background: 'var(--sand)',
-      }}>
+      <div className="aspect-[4/5] overflow-hidden bg-sand">
         {coverImage ? (
           <img
             src={coverImage.imageUrl}
             alt={product.name}
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              display: 'block',
-              transform: hovered ? 'scale(1.03)' : 'scale(1)',
-              transition: 'transform 0.4s var(--ease-out)',
-            }}
+            className="w-full h-full object-cover block transition-transform duration-[400ms] ease-out group-hover:scale-[1.03]"
           />
         ) : (
-          <div style={{ width: '100%', height: '100%', background: 'var(--sand)' }} />
+          <div className="w-full h-full bg-sand" />
         )}
       </div>
-
-      {/* Text */}
-      <div style={{ padding: '14px 16px 18px' }}>
-        <p style={{
-          fontFamily: 'var(--font-display)',
-          fontSize: 15,
-          color: 'var(--ink)',
-          margin: 0,
-          marginBottom: 6,
-          lineHeight: 1.4,
-          letterSpacing: '-0.01em',
-        }}>
+      <div className="px-4 pt-[14px] pb-[18px]">
+        <p className="font-display text-[15px] text-ink leading-snug tracking-[-0.01em] m-0 mb-[6px]">
           {product.name}
         </p>
-        <p style={{
-          fontFamily: 'var(--font-display)',
-          fontSize: 18,
-          color: 'var(--ink)',
-          margin: 0,
-          letterSpacing: '-0.01em',
-        }}>
+        <p className="font-display text-[18px] text-ink tracking-[-0.01em] m-0">
           NT$ {product.price.toLocaleString()}
         </p>
       </div>

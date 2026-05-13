@@ -21,6 +21,12 @@ interface Props {
   onSaved: () => void
 }
 
+const inputClass =
+  'w-full border border-bone rounded-[2px] bg-paper text-ink px-3 py-2 text-sm font-sans outline-none focus:outline focus:outline-1 focus:outline-shu focus:outline-offset-2 box-border'
+
+const labelClass =
+  'block text-[11px] text-ink-3 tracking-[0.16em] uppercase font-sans font-medium mb-[6px]'
+
 export default function ProductEditModal({
   productId,
   name: initName,
@@ -78,98 +84,102 @@ export default function ProductEditModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 p-6"
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-xl shadow-xl w-full max-w-lg mx-4 flex flex-col max-h-[90vh]"
+        className="bg-paper border border-bone rounded-lg shadow-[0_24px_60px_rgba(27,26,23,0.16)] w-full max-w-[540px] flex flex-col max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-          <h2 className="text-lg font-semibold text-gray-800">編輯商品</h2>
+        <div className="flex items-center justify-between px-6 py-5 border-b border-bone">
+          <h2 className="m-0 font-display text-2xl font-normal text-ink tracking-[-0.01em]">
+            編輯商品
+          </h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 text-xl leading-none"
+            aria-label="關閉"
+            className="w-8 h-8 flex items-center justify-center text-ink-3 hover:text-ink text-lg transition-colors"
           >
             ✕
           </button>
         </div>
 
-        {/* Scrollable body */}
-        <div className="overflow-y-auto px-6 py-5 space-y-4">
-          {/* 商品名稱 */}
+        {/* Body */}
+        <div className="overflow-y-auto px-6 py-5 flex flex-col gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">商品名稱</label>
+            <label className={labelClass}>商品名稱</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+              className={inputClass}
             />
           </div>
 
-          {/* 價格 / 庫存 */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">價格（NT$）</label>
+              <label className={labelClass}>價格（NT$）</label>
               <input
                 type="number"
                 min={0}
                 value={price}
                 onChange={(e) => setPrice(Number(e.target.value))}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+                className={inputClass}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">庫存數量</label>
+              <label className={labelClass}>庫存數量</label>
               <input
                 type="number"
                 min={0}
                 value={stock}
                 onChange={(e) => setStock(Number(e.target.value))}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+                className={inputClass}
               />
             </div>
           </div>
 
-          {/* 上下架狀態 */}
+          {/* Active toggle */}
           <div className="flex items-center gap-3">
-            <span className="text-sm font-medium text-gray-700">上架狀態</span>
+            <span className={labelClass}>上架狀態</span>
             <button
               type="button"
               onClick={() => setIsActive((v) => !v)}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                isActive ? 'bg-blue-600' : 'bg-gray-300'
+              className={`relative inline-flex items-center h-[22px] w-[42px] rounded-full transition-colors p-0 border-none cursor-pointer mb-[6px] ${
+                isActive ? 'bg-shu' : 'bg-bone'
               }`}
             >
               <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${
-                  isActive ? 'translate-x-6' : 'translate-x-1'
+                className={`inline-block w-4 h-4 rounded-full bg-paper shadow transition-transform ${
+                  isActive ? 'translate-x-[23px]' : 'translate-x-[3px]'
                 }`}
               />
             </button>
-            <span className={`text-sm ${isActive ? 'text-blue-600' : 'text-gray-400'}`}>
+            <span
+              className={`text-[13px] font-sans mb-[6px] ${
+                isActive ? 'text-shu' : 'text-ink-3'
+              }`}
+            >
               {isActive ? '上架中' : '已下架'}
             </span>
           </div>
 
-          {/* 詳細敘述 */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">詳細敘述</label>
+            <label className={labelClass}>詳細敘述</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 resize-none"
+              className={`${inputClass} resize-none`}
             />
           </div>
 
-          {/* 圖片管理 */}
-          <div className="border-t border-gray-100 pt-4">
-            <p className="text-sm font-medium text-gray-700 mb-2">商品圖片</p>
+          {/* Images */}
+          <div className="border-t border-bone pt-4">
+            <p className={`${labelClass} mb-[10px]`}>商品圖片</p>
             {images.length === 0 ? (
-              <p className="text-sm text-gray-400 mb-3">尚無圖片</p>
+              <p className="text-[13px] text-ink-3 m-0 mb-3">尚無圖片</p>
             ) : (
               <div className="grid grid-cols-3 gap-2 mb-3">
                 {images.map((img) => (
@@ -177,10 +187,10 @@ export default function ProductEditModal({
                     <img
                       src={img.imageUrl}
                       alt="商品圖片"
-                      className="w-full h-24 object-cover rounded-lg border border-gray-200"
+                      className="w-full h-24 object-cover block border border-bone rounded-[2px]"
                     />
                     {img.isCover && (
-                      <span className="absolute bottom-1 left-1 bg-blue-500 text-white text-xs px-1.5 py-0.5 rounded">
+                      <span className="absolute bottom-1 left-1 bg-shu text-paper text-[10px] px-[6px] py-[2px] rounded-[2px] tracking-[0.08em] font-sans">
                         封面
                       </span>
                     )}
@@ -193,14 +203,14 @@ export default function ProductEditModal({
               type="file"
               accept="image/*"
               onChange={(e) => setSelectedFile(e.target.files?.[0] ?? null)}
-              className="block w-full text-sm text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              className="block w-full text-[13px] text-ink-3 font-sans"
             />
-            {uploadError && <p className="mt-1 text-sm text-red-500">{uploadError}</p>}
-            <div className="mt-2 flex justify-end">
+            {uploadError && <p className="mt-2 text-[13px] text-shu m-0">{uploadError}</p>}
+            <div className="mt-[10px] flex justify-end">
               <button
                 onClick={handleUpload}
                 disabled={!selectedFile || uploading}
-                className="px-3 py-1.5 text-sm rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-shu hover:bg-shu-dark text-paper rounded-[2px] py-[6px] px-4 font-sans text-xs tracking-[0.1em] transition-colors disabled:bg-bone disabled:text-ink-3 disabled:cursor-not-allowed disabled:hover:bg-bone"
               >
                 {uploading ? '上傳中...' : '上傳圖片'}
               </button>
@@ -209,20 +219,23 @@ export default function ProductEditModal({
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-          {saveError && <p className="text-sm text-red-500">{saveError}</p>}
-          {!saveError && <span />}
+        <div className="px-6 py-4 border-t border-bone flex items-center justify-between gap-3">
+          {saveError ? (
+            <p className="m-0 text-[13px] text-shu">{saveError}</p>
+          ) : (
+            <span />
+          )}
           <div className="flex gap-2">
             <button
               onClick={onClose}
-              className="px-4 py-2 text-sm rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50"
+              className="bg-transparent border border-bone rounded-[2px] py-2 px-[18px] font-sans text-[13px] text-ink-2 hover:text-ink tracking-[0.1em] transition-colors"
             >
               取消
             </button>
             <button
               onClick={handleSave}
               disabled={saving}
-              className="px-4 py-2 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-shu hover:bg-shu-dark text-paper rounded-[2px] py-2 px-[18px] font-sans text-[13px] tracking-[0.1em] transition-colors disabled:bg-bone disabled:text-ink-3 disabled:cursor-not-allowed disabled:hover:bg-bone"
             >
               {saving ? '儲存中...' : '儲存'}
             </button>

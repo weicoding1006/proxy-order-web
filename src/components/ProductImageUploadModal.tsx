@@ -17,6 +17,9 @@ interface Props {
   onUploaded: () => void
 }
 
+const labelClass =
+  'block text-[11px] text-ink-3 tracking-[0.16em] uppercase font-sans font-medium mb-[10px]'
+
 export default function ProductImageUploadModal({ productId, productName, images, onClose, onUploaded }: Props) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [uploading, setUploading] = useState(false)
@@ -41,28 +44,34 @@ export default function ProductImageUploadModal({ productId, productName, images
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 p-6"
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-xl shadow-xl w-full max-w-lg mx-4 p-6"
+        className="bg-paper border border-bone rounded-lg shadow-[0_24px_60px_rgba(27,26,23,0.16)] w-full max-w-[540px] p-6"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-gray-800">編輯圖片 — {productName}</h2>
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="m-0 font-display text-[22px] font-normal text-ink tracking-[-0.01em]">
+            上傳商品圖片
+            <span className="block text-xs text-ink-3 font-sans tracking-[0.08em] mt-1">
+              {productName}
+            </span>
+          </h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 text-xl leading-none"
+            aria-label="關閉"
+            className="w-8 h-8 flex items-center justify-center text-ink-3 hover:text-ink text-lg transition-colors"
           >
             ✕
           </button>
         </div>
 
-        {/* 現有圖片 */}
+        {/* Existing */}
         <div className="mb-5">
-          <p className="text-sm font-medium text-gray-600 mb-2">現有圖片</p>
+          <p className={labelClass}>現有圖片</p>
           {images.length === 0 ? (
-            <p className="text-sm text-gray-400">尚無圖片</p>
+            <p className="m-0 text-[13px] text-ink-3">尚無圖片</p>
           ) : (
             <div className="grid grid-cols-3 gap-2">
               {images.map((img) => (
@@ -70,10 +79,10 @@ export default function ProductImageUploadModal({ productId, productName, images
                   <img
                     src={img.imageUrl}
                     alt="商品圖片"
-                    className="w-full h-24 object-cover rounded-lg border border-gray-200"
+                    className="w-full h-24 object-cover block border border-bone rounded-[2px]"
                   />
                   {img.isCover && (
-                    <span className="absolute bottom-1 left-1 bg-blue-500 text-white text-xs px-1.5 py-0.5 rounded">
+                    <span className="absolute bottom-1 left-1 bg-shu text-paper text-[10px] px-[6px] py-[2px] rounded-[2px] tracking-[0.08em]">
                       封面
                     </span>
                   )}
@@ -83,28 +92,28 @@ export default function ProductImageUploadModal({ productId, productName, images
           )}
         </div>
 
-        {/* 上傳新圖片 */}
-        <div className="border-t border-gray-100 pt-4">
-          <p className="text-sm font-medium text-gray-600 mb-2">上傳新圖片</p>
+        {/* Upload */}
+        <div className="border-t border-bone pt-4">
+          <p className={labelClass}>上傳新圖片</p>
           <input
             ref={fileInputRef}
             type="file"
             accept="image/*"
             onChange={(e) => setSelectedFile(e.target.files?.[0] ?? null)}
-            className="block w-full text-sm text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+            className="block w-full text-[13px] text-ink-3 font-sans"
           />
-          {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
-          <div className="mt-3 flex justify-end gap-2">
+          {error && <p className="mt-2 text-[13px] text-shu m-0">{error}</p>}
+          <div className="mt-4 flex justify-end gap-2">
             <button
               onClick={onClose}
-              className="px-4 py-2 text-sm rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50"
+              className="bg-transparent border border-bone rounded-[2px] py-2 px-[18px] font-sans text-[13px] text-ink-2 hover:text-ink tracking-[0.1em] transition-colors"
             >
               關閉
             </button>
             <button
               onClick={handleUpload}
               disabled={!selectedFile || uploading}
-              className="px-4 py-2 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-shu hover:bg-shu-dark text-paper rounded-[2px] py-2 px-[18px] font-sans text-[13px] tracking-[0.1em] transition-colors disabled:bg-bone disabled:text-ink-3 disabled:cursor-not-allowed disabled:hover:bg-bone"
             >
               {uploading ? '上傳中...' : '上傳'}
             </button>

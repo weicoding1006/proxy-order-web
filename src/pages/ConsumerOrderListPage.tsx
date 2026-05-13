@@ -27,54 +27,22 @@ function formatDate(iso: string) {
 
 type StatusKey = 'Pending' | 'Confirmed' | 'Completed' | 'Cancelled'
 
-const STATUS_MAP: Record<StatusKey, { bg: string; color: string; label: string }> = {
-  Pending:   { bg: 'var(--yuhi-light)',  color: 'var(--yuhi)',  label: '待確認' },
-  Confirmed: { bg: 'var(--ai-light)',    color: 'var(--ai)',    label: '已確認' },
-  Completed: { bg: 'var(--moss-light)',  color: 'var(--moss)',  label: '已完成' },
-  Cancelled: { bg: 'var(--bone)',        color: 'var(--ink-3)', label: '已取消' },
+const STATUS_STYLE: Record<StatusKey, { className: string; label: string }> = {
+  Pending:   { className: 'bg-yuhi-light text-yuhi',  label: '待確認' },
+  Confirmed: { className: 'bg-ai-light text-ai',      label: '已確認' },
+  Completed: { className: 'bg-moss-light text-moss',  label: '已完成' },
+  Cancelled: { className: 'bg-bone text-ink-3',       label: '已取消' },
 }
 
 function StatusBadge({ status }: { status: string | null }) {
   const key = status as StatusKey
-  const style = STATUS_MAP[key] ?? { bg: 'var(--sand)', color: 'var(--ink-2)', label: status ?? '未知' }
+  const style = STATUS_STYLE[key] ?? { className: 'bg-sand text-ink-2', label: status ?? '未知' }
   return (
-    <span style={{
-      display: 'inline-block',
-      background: style.bg,
-      color: style.color,
-      fontSize: 11,
-      letterSpacing: '0.1em',
-      padding: '3px 10px',
-      borderRadius: 'var(--r-1)',
-      fontFamily: 'var(--font-sans)',
-    }}>
-      {STATUS_MAP[key]?.label ?? (status ?? '未知')}
-    </span>
-  )
-}
-
-function ViewButton({ onClick }: { onClick: () => void }) {
-  const [hovered, setHovered] = useState(false)
-  return (
-    <button
-      onClick={onClick}
-      style={{
-        background: hovered ? 'var(--ink)' : 'transparent',
-        color: hovered ? 'var(--paper)' : 'var(--ink)',
-        border: '1px solid var(--ink)',
-        borderRadius: 'var(--r-1)',
-        padding: '6px 16px',
-        fontFamily: 'var(--font-sans)',
-        fontSize: 12,
-        letterSpacing: '0.1em',
-        cursor: 'pointer',
-        transition: `background var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out)`,
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+    <span
+      className={`inline-block ${style.className} font-sans text-[11px] tracking-[0.1em] px-[10px] py-[3px] rounded-[2px]`}
     >
-      檢視
-    </button>
+      {STATUS_STYLE[key]?.label ?? (status ?? '未知')}
+    </span>
   )
 }
 
@@ -97,61 +65,37 @@ export default function ConsumerOrderListPage() {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '80px 0' }}>
-        <p style={{ color: 'var(--ink-3)', fontSize: 16 }}>載入中...</p>
+      <div className="flex items-center justify-center py-20">
+        <p className="text-ink-3 text-base">載入中...</p>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '80px 0' }}>
-        <p style={{ color: 'var(--shu)', fontSize: 16 }}>{error}</p>
+      <div className="flex items-center justify-center py-20">
+        <p className="text-shu text-base">{error}</p>
       </div>
     )
   }
 
   return (
     <div>
-      {/* Page title */}
-      <h1 style={{
-        fontFamily: 'var(--font-display)',
-        fontSize: 36,
-        fontWeight: 400,
-        color: 'var(--ink)',
-        margin: 0,
-        marginBottom: 32,
-        letterSpacing: '-0.01em',
-      }}>
+      <h1 className="font-display text-4xl font-normal text-ink tracking-[-0.01em] m-0 mb-8">
         我的訂單
       </h1>
 
       {orders.length === 0 ? (
-        <p style={{ color: 'var(--ink-3)', fontSize: 15 }}>目前沒有訂單</p>
+        <p className="text-ink-3 text-[15px]">目前沒有訂單</p>
       ) : (
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{
-            width: '100%',
-            borderCollapse: 'collapse',
-            background: 'var(--paper)',
-            fontSize: 14,
-          }}>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse bg-paper text-sm">
             <thead>
-              <tr style={{ background: 'var(--sand)' }}>
+              <tr className="bg-sand">
                 {['訂單編號', '金額', '狀態', '建立時間', '操作'].map((col) => (
                   <th
                     key={col}
-                    style={{
-                      padding: '12px 16px',
-                      textAlign: 'center',
-                      fontSize: 11,
-                      color: 'var(--ink-3)',
-                      fontWeight: 500,
-                      letterSpacing: '0.12em',
-                      textTransform: 'uppercase',
-                      borderBottom: '1px solid var(--bone)',
-                      fontFamily: 'var(--font-sans)',
-                    }}
+                    className="px-4 py-3 text-center text-[11px] text-ink-3 font-medium tracking-[0.12em] uppercase border-b border-bone font-sans"
                   >
                     {col}
                   </th>
@@ -160,35 +104,28 @@ export default function ConsumerOrderListPage() {
             </thead>
             <tbody>
               {orders.map((order) => (
-                <tr key={order.id} style={{ borderBottom: '1px solid var(--bone)' }}>
-                  {/* Order ID */}
-                  <td style={{ padding: '14px 16px', textAlign: 'center' }}>
-                    <span
-                      title={order.id}
-                      style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--ink-3)' }}
-                    >
+                <tr key={order.id} className="border-b border-bone">
+                  <td className="px-4 py-[14px] text-center">
+                    <span title={order.id} className="font-mono text-xs text-ink-3">
                       {order.id.slice(0, 8)}...
                     </span>
                   </td>
-
-                  {/* Amount */}
-                  <td style={{ padding: '14px 16px', textAlign: 'center', fontFamily: 'var(--font-sans)', fontSize: 14, color: 'var(--ink)' }}>
+                  <td className="px-4 py-[14px] text-center font-sans text-sm text-ink">
                     NT$ {order.totalAmount.toLocaleString()}
                   </td>
-
-                  {/* Status */}
-                  <td style={{ padding: '14px 16px', textAlign: 'center' }}>
+                  <td className="px-4 py-[14px] text-center">
                     <StatusBadge status={order.status} />
                   </td>
-
-                  {/* Date */}
-                  <td style={{ padding: '14px 16px', textAlign: 'center', fontFamily: 'var(--font-sans)', fontSize: 13, color: 'var(--ink-3)' }}>
+                  <td className="px-4 py-[14px] text-center font-sans text-[13px] text-ink-3">
                     {formatDate(order.createdAt)}
                   </td>
-
-                  {/* Action */}
-                  <td style={{ padding: '14px 16px', textAlign: 'center' }}>
-                    <ViewButton onClick={() => setSelectedOrderId(order.id)} />
+                  <td className="px-4 py-[14px] text-center">
+                    <button
+                      onClick={() => setSelectedOrderId(order.id)}
+                      className="bg-transparent hover:bg-ink text-ink hover:text-paper border border-ink rounded-[2px] py-[6px] px-4 font-sans text-xs tracking-[0.1em] transition-colors"
+                    >
+                      檢視
+                    </button>
                   </td>
                 </tr>
               ))}
