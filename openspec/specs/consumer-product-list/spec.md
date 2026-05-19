@@ -49,3 +49,18 @@ H1 SHALL use `var(--font-display)` at 48px weight 400. Breadcrumb above SHALL us
 #### Scenario: Page title displayed
 - **WHEN** product list page renders
 - **THEN** H1 SHALL display `商品列表` in serif font
+
+### Requirement: 商品卡片顯示收藏切換按鈕
+每張商品卡片 SHALL 在右上角顯示心形收藏切換按鈕，使用者可直接在商品列表頁收藏或取消收藏商品。
+
+#### Scenario: 商品未收藏時顯示空心按鈕
+- **WHEN** 商品列表頁渲染且該商品未在收藏清單中
+- **THEN** 卡片右上角顯示空心心形圖示按鈕（灰色）
+
+#### Scenario: 商品已收藏時顯示實心按鈕
+- **WHEN** 商品列表頁渲染且該商品已在收藏清單中
+- **THEN** 卡片右上角顯示實心心形圖示按鈕（紅色/shu 色）
+
+#### Scenario: 點擊收藏按鈕不觸發卡片導航
+- **WHEN** 使用者點擊商品卡片的收藏按鈕
+- **THEN** 觸發收藏切換操作，不導航至商品詳情頁

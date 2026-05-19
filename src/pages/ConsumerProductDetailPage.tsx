@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { fetchProductById } from '../api/product'
 import { addItem } from '../store/slices/cartSlice'
+import { toggleFavorite, selectIsFavorited } from '../store/slices/favoritesSlice'
 import type { AppDispatch } from '../store'
 
 interface ProductImageDto {
@@ -35,7 +36,9 @@ export default function ConsumerProductDetailPage() {
   const [activeImageId, setActiveImageId] = useState<string | null>(null)
   const [quantity, setQuantity] = useState(1)
   const [adding, setAdding] = useState(false)
+  const [favoriting, setFavoriting] = useState(false)
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+  const isFavorited = useSelector(selectIsFavorited(id ?? ''))
 
   useEffect(() => {
     if (!id) return
@@ -105,6 +108,16 @@ export default function ConsumerProductDetailPage() {
       setFeedback({ type: 'error', text: (err as string) ?? '加入購物車失敗' })
     } finally {
       setAdding(false)
+    }
+  }
+
+  async function handleToggleFavorite() {
+    if (!product || favoriting) return
+    setFavoriting(true)
+    try {
+      await dispatch(toggleFavorite(product.id)).unwrap()
+    } finally {
+      setFavoriting(false)
     }
   }
 
@@ -209,15 +222,31 @@ export default function ConsumerProductDetailPage() {
             </div>
           </div>
 
-          {/* Add to cart */}
-          <button
-            type="button"
-            onClick={handleAddToCart}
-            disabled={outOfStock || adding}
-            className="self-start bg-shu hover:bg-shu-dark text-paper rounded-[2px] py-3 px-8 font-sans text-[13px] tracking-[0.1em] transition-colors disabled:bg-bone disabled:text-ink-3 disabled:cursor-not-allowed disabled:hover:bg-bone"
-          >
-            {outOfStock ? '缺貨' : adding ? '加入中...' : '加入購物車'}
-          </button>
+          {/* Add to cart + favorite */}
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={handleAddToCart}
+              disabled={outOfStock || adding}
+              className="bg-shu hover:bg-shu-dark text-paper rounded-[2px] py-3 px-8 font-sans text-[13px] tracking-[0.1em] transition-colors disabled:bg-bone disabled:text-ink-3 disabled:cursor-not-allowed disabled:hover:bg-bone"
+            >
+              {outOfStock ? '缺貨' : adding ? '加入中...' : '加入購物車'}
+            </button>
+
+            <button
+              type="button"
+              onClick={handleToggleFavorite}
+              disabled={favoriting}
+              className={`flex items-center gap-[6px] py-3 px-4 rounded-[2px] border font-sans text-[13px] tracking-[0.08em] transition-colors disabled:cursor-not-allowed ${
+                isFavorited
+                  ? 'border-shu text-shu bg-shu/5 hover:bg-shu/10'
+                  : 'border-bone text-ink-2 bg-paper hover:border-ink-2'
+              }`}
+            >
+              <HeartIcon filled={isFavorited} className="w-4 h-4" />
+              {isFavorited ? '已收藏' : '加入收藏'}
+            </button>
+          </div>
 
           {feedback && (
             <p className={`mt-3 text-[13px] ${feedback.type === 'success' ? 'text-moss' : 'text-shu'}`}>
@@ -227,5 +256,17 @@ export default function ConsumerProductDetailPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+function HeartIcon({ filled, className }: { filled?: boolean; className?: string }) {
+  return filled ? (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+    </svg>
+  ) : (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" xmlns="http://www.w3.org/2000/svg">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.5C21 5.42 18.58 3 15.5 3c-1.74 0-3.41.81-4.5 2.09C9.91 3.81 8.24 3 6.5 3 3.42 3 1 5.42 1 8.5c0 3.78 3.4 6.86 8.55 11.54L11 21.35l1.45-1.32C17.6 15.36 21 12.28 21 8.5z" />
+    </svg>
   )
 }

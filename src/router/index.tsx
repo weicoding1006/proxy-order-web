@@ -7,6 +7,7 @@ import ConsumerProductListPage from '../pages/ConsumerProductListPage'
 import ConsumerProductDetailPage from '../pages/ConsumerProductDetailPage'
 import ConsumerCartPage from '../pages/ConsumerCartPage'
 import ConsumerOrderListPage from '../pages/ConsumerOrderListPage'
+import ConsumerFavoritesPage from '../pages/ConsumerFavoritesPage'
 import LoginPage from '../pages/LoginPage'
 import RegisterPage from '../pages/RegisterPage'
 import NotFoundPage from '../pages/NotFoundPage'
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
       {
         path: '/my-orders',
         element: <ConsumerOrderListPage />,
+      },
+      {
+        path: '/favorites',
+        element: <ConsumerFavoritesPage />,
       },
       {
         path: '*',

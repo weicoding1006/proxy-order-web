@@ -5,6 +5,7 @@ import { useTokenCountdown } from '../hooks/useTokenCountdown'
 import { clearAuth, getToken } from '../utils/auth'
 import type { AppDispatch } from '../store'
 import { loadCart, selectCartItemCount, resetCart } from '../store/slices/cartSlice'
+import { loadFavorites } from '../store/slices/favoritesSlice'
 
 export default function ConsumerLayout() {
   const countdown = useTokenCountdown()
@@ -15,6 +16,7 @@ export default function ConsumerLayout() {
   useEffect(() => {
     if (getToken()) {
       dispatch(loadCart())
+      dispatch(loadFavorites())
     }
   }, [dispatch])
 
@@ -45,7 +47,7 @@ export default function ConsumerLayout() {
               日
             </div>
             <span className="font-display text-[20px] font-medium tracking-[-0.01em] text-ink">
-              日和代購
+              代購
             </span>
           </NavLink>
 
@@ -58,6 +60,9 @@ export default function ConsumerLayout() {
             </NavLink>
             <NavLink to="/my-orders" className={navLinkClass}>
               我的訂單
+            </NavLink>
+            <NavLink to="/favorites" className={navLinkClass}>
+              我的收藏
             </NavLink>
 
             <NavLink

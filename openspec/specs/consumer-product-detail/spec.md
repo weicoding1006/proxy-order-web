@@ -42,3 +42,22 @@ Above the product content, a breadcrumb SHALL show `首頁 / 商品列表` in 11
 #### Scenario: Breadcrumb links back to list
 - **WHEN** user clicks the breadcrumb link
 - **THEN** user SHALL navigate to the product list page `/`
+
+### Requirement: 商品詳情頁顯示收藏切換按鈕
+商品詳情頁的操作區 SHALL 在「加入購物車」按鈕旁顯示收藏切換按鈕，允許使用者收藏或取消收藏當前商品。
+
+#### Scenario: 商品未收藏時顯示收藏按鈕
+- **WHEN** 商品詳情頁載入且該商品未在收藏清單中
+- **THEN** 顯示「加入收藏」文字與空心心形圖示的按鈕
+
+#### Scenario: 商品已收藏時顯示取消收藏按鈕
+- **WHEN** 商品詳情頁載入且該商品已在收藏清單中
+- **THEN** 顯示「已收藏」文字與實心心形圖示的按鈕（shu 色系）
+
+#### Scenario: 收藏操作成功
+- **WHEN** 使用者點擊收藏/取消收藏按鈕且 API 成功
+- **THEN** 按鈕狀態立即切換，反映新的收藏狀態
+
+#### Scenario: 操作進行中禁用按鈕
+- **WHEN** 收藏 API 請求尚未完成
+- **THEN** 按鈕處於 disabled 狀態，避免重複點擊

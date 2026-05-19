@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
 import { fetchProducts } from '../api/product'
+import type { AppDispatch } from '../store'
+import { toggleFavorite, selectIsFavorited } from '../store/slices/favoritesSlice'
 
 interface ProductImageDto {
   id: string
@@ -132,30 +135,70 @@ function ProductCard({
   product: { id: string; name: string; price: number }
   coverImage?: { imageUrl: string }
 }) {
+  const dispatch = useDispatch<AppDispatch>()
+  const isFavorited = useSelector(selectIsFavorited(product.id))
+  const [toggling, setToggling] = useState(false)
+
+  async function handleToggle(e: React.MouseEvent) {
+    e.preventDefault()
+    e.stopPropagation()
+    if (toggling) return
+    setToggling(true)
+    try {
+      await dispatch(toggleFavorite(product.id)).unwrap()
+    } finally {
+      setToggling(false)
+    }
+  }
+
   return (
-    <Link
-      to={`/products/${product.id}`}
-      className="group block bg-paper border border-bone rounded-[4px] overflow-hidden transition-shadow duration-200 hover:shadow-[0_2px_8px_rgba(27,26,23,0.06)]"
-    >
-      <div className="aspect-[4/5] overflow-hidden bg-sand">
-        {coverImage ? (
-          <img
-            src={coverImage.imageUrl}
-            alt={product.name}
-            className="w-full h-full object-cover block transition-transform duration-[400ms] ease-out group-hover:scale-[1.03]"
-          />
-        ) : (
-          <div className="w-full h-full bg-sand" />
-        )}
-      </div>
-      <div className="px-4 pt-[14px] pb-[18px]">
-        <p className="font-display text-[15px] text-ink leading-snug tracking-[-0.01em] m-0 mb-[6px]">
-          {product.name}
-        </p>
-        <p className="font-display text-[18px] text-ink tracking-[-0.01em] m-0">
-          NT$ {product.price.toLocaleString()}
-        </p>
-      </div>
-    </Link>
+    <div className="relative group">
+      <Link
+        to={`/products/${product.id}`}
+        className="block bg-paper border border-bone rounded-[4px] overflow-hidden transition-shadow duration-200 hover:shadow-[0_2px_8px_rgba(27,26,23,0.06)]"
+      >
+        <div className="aspect-[4/5] overflow-hidden bg-sand">
+          {coverImage ? (
+            <img
+              src={coverImage.imageUrl}
+              alt={product.name}
+              className="w-full h-full object-cover block transition-transform duration-[400ms] ease-out group-hover:scale-[1.03]"
+            />
+          ) : (
+            <div className="w-full h-full bg-sand" />
+          )}
+        </div>
+        <div className="px-4 pt-[14px] pb-[18px]">
+          <p className="font-display text-[15px] text-ink leading-snug tracking-[-0.01em] m-0 mb-[6px]">
+            {product.name}
+          </p>
+          <p className="font-display text-[18px] text-ink tracking-[-0.01em] m-0">
+            NT$ {product.price.toLocaleString()}
+          </p>
+        </div>
+      </Link>
+
+      <button
+        type="button"
+        onClick={handleToggle}
+        disabled={toggling}
+        aria-label={isFavorited ? '取消收藏' : '加入收藏'}
+        className="absolute top-2 right-2 w-8 h-8 flex items-center justify-center bg-paper/80 rounded-full border border-bone hover:bg-paper transition-colors disabled:cursor-not-allowed"
+      >
+        <HeartIcon filled={isFavorited} className={`w-4 h-4 ${isFavorited ? 'text-shu' : 'text-ink-3'}`} />
+      </button>
+    </div>
+  )
+}
+
+function HeartIcon({ filled, className }: { filled?: boolean; className?: string }) {
+  return filled ? (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+    </svg>
+  ) : (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" xmlns="http://www.w3.org/2000/svg">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.5C21 5.42 18.58 3 15.5 3c-1.74 0-3.41.81-4.5 2.09C9.91 3.81 8.24 3 6.5 3 3.42 3 1 5.42 1 8.5c0 3.78 3.4 6.86 8.55 11.54L11 21.35l1.45-1.32C17.6 15.36 21 12.28 21 8.5z" />
+    </svg>
   )
 }
